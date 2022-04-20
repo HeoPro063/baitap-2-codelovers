@@ -23,12 +23,12 @@
 </template>
 
 <script>
-import { mapActions} from 'vuex'
+import { mapActions, mapGetters, mapMutations} from 'vuex'
 
 export default {
-    props: ['dataDelete'],
+    props: ['dataDelete', 'dataGet'],
     methods: {
-        ...mapActions(['deleteCategory']),
+        ...mapActions(['deleteCategory', 'getPaginateCategory']),
         submitDelete(){
             this.deleteCategory(this.dataDelete)
         }

@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -34,10 +35,12 @@ Route::group(['prefix' => 'category'], function(){
     Route::post('paginate',  [CategoryController::class, 'store']);
 
     Route::group(['prefix' => 'product'], function() {
-        Route::get('index', [ProductController::class, 'index']);
+        // Route::get('index', [ProductController::class, 'index']);
+        Route::get('show/{data}/{action}', [ProductController::class, 'show']);
         Route::post('create', [ProductController::class, 'create']);
         Route::get('delete/{id}', [ProductController::class, 'destroy']);
         Route::post('edit', [ProductController::class, 'edit']);
         Route::post('paginate',  [ProductController::class, 'store']);
+        Route::get('show/{id}',  [ProductController::class, 'show']);
     });
 });

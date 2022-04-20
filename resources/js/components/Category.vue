@@ -7,14 +7,14 @@
           <div class="card-header justify-content-between">
             <div class="container">
               <div class="row">
-                <div class="col-md-8">
-                  <h3 class="card-title">Categories</h3>
+                <div class="col-md-6">
+                  <h3 @click="resetDataCategory" class="card-title cursor-button">Categories</h3>
                 </div>
                 <div class="col-md-2">
                   <div class="input-group">
                     <div class="form-outline">
                       <input
-                        type="search"
+                        type="text"
                         id="form1"
                         class="form-control"
                         v-model="search"
@@ -22,6 +22,13 @@
                       />
                     </div>
                   </div>
+                </div>
+                <div class="col-md-2">
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    @click="searchCategory"
+                  >Tìm kiếm</button>
                 </div>
                 <div class="col-md-2">
                   <button
@@ -67,24 +74,21 @@
               </tbody>
             </table>
           </div>
-          <!-- /.card-body -->
-          <div class="card-footer clearfix">
+         <div class="card-footer clearfix" v-if="isPaginate.total_page > 1">
             <ul class="pagination pagination-sm m-0 float-right">
-              <li class="page-item" v-bind:class="[{disabled : !isPaginate.prev_page_url}]">
+              <li class="page-item" v-bind:class="[{disabled : isPaginate.page === 1}]">
                 <a
-                  class="page-link"
-                  @click="fetchCustomer(isPaginate.prev_page_url)"
-                  href="#"
+                  class="page-link cursor-button"
+                  @click="fetchCustomer(1)"
                 >&laquo;</a>
               </li>
               <li class="page-item">
-                <a class="page-link">Số trang {{isPaginate.current_page}}-{{isPaginate.last_page}}</a>
+                <a class="page-link">Số trang {{this.isPaginate.page}} - {{this.isPaginate.total_page}}</a>
               </li>
-              <li class="page-item" v-bind:class="[{disabled : !isPaginate.next_page_url}]">
+              <li class="page-item"  v-bind:class="[{disabled : isPaginate.page === this.isPaginate.total_page}]">
                 <a
-                  class="page-link"
-                  @click="fetchCustomer(isPaginate.next_page_url)"
-                  href="#"
+                  class="page-link cursor-button"
+                  @click="fetchCustomer(2)"
                 >&raquo;</a>
               </li>
             </ul>
@@ -97,7 +101,7 @@
     <!-- edit category -->
     <ModalEdit :dataedit="dataEdit"></ModalEdit>
     <!-- delete category -->
-    <ModelDelete :dataDelete="dataDelete"></ModelDelete>
+    <ModelDelete :dataDelete="dataDelete" :dataGet="dataGet"></ModelDelete>
   </div>
 </template>
 
@@ -108,12 +112,8 @@ import ModalEdit from "../layout/modal/category/Edit";
 import ModelDelete from "../layout/modal/category/Delete";
 
 export default {
-  watch: {
-    search() {
-      this.dataGet.dataSeach = this.search;
-      this.dataGet.url_get = "api/category/paginate";
-      this.getPaginateCategory(this.dataGet);
-    }
+  created() {
+    this.getPaginateCategory(this.dataGet);
   },
   data() {
     return {
@@ -128,7 +128,7 @@ export default {
       },
       dataGet: {
         url_get: "api/category/paginate",
-        dataSeach: ""
+        dataSearch: ""
       },
       search: ""
     };
@@ -147,14 +147,26 @@ export default {
       this.dataDelete.id = categoryId;
       this.dataDelete.index = index;
     },
-    fetchCustomer(page_url) {
-      this.dataGet.url_get = page_url;
+    fetchCustomer(page) {
+      let page_link = page === 1 ?  this.isPaginate.page - 1 :  this.isPaginate.page + 1;
+      this.dataGet.url_get = `api/category/paginate?page=${page_link}`;
+      this.getPaginateCategory(this.dataGet);
+    },
+    searchCategory(){
+      this.dataGet.dataSearch = this.search;
+      this.dataGet.url_get = `api/category/paginate`
+      this.getPaginateCategory(this.dataGet);
+    },
+    resetDataCategory(){
+      this.dataGet.dataSearch = '';
+      this.dataGet.url_get = `api/category/paginate`
       this.getPaginateCategory(this.dataGet);
     }
   },
-  created() {
-    this.getPaginateCategory(this.dataGet);
-  },
+  
+  // beforeUpdate(){
+  //   this.getPaginateCategory(this.dataGet);
+  // },
   components: {
     ModalAdd,
     ModalEdit,
@@ -162,3 +174,9 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+  .cursor-button{
+    cursor: pointer;
+  }
+</style>

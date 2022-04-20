@@ -19,7 +19,7 @@
                         <div class="form-group">
                           <label for="disabledTextInput">Name Category</label>
                           <div>
-                            <select v-model="categoryId" class="custom-select">
+                            <select v-model="category_id" class="custom-select">
                               <option
                                 v-for="item  in islistCategories"
                                 :key="item.id"
@@ -28,7 +28,7 @@
                             </select>
                           </div>
                           <span
-                            v-if="!$v.categoryId.required && $v.categoryId.$dirty"
+                            v-if="!$v.category_id.required && $v.category_id.$dirty"
                             class="text-danger"
                           >Required field!</span>
                         </div>
@@ -69,7 +69,7 @@
                           <label for="disabledTextInput">Price</label>
                           <input
                             v-model="price"
-                            type="text"
+                            type="number"
                             id="disabledTextInput"
                             class="form-control"
                             placeholder="enter name product"
@@ -85,13 +85,14 @@
                         </div>
                         <div class="form-group">
                           <label for="disabledTextInput">Color</label>
-                          <input
-                            v-model="color"
-                            type="text"
-                            id="disabledTextInput"
-                            class="form-control"
-                            placeholder="enter name product"
-                          />
+                          <div>
+                            <select v-model="color" class="custom-select">
+                              <option v-bind:value="'red'">Red</option>
+                              <option v-bind:value="'blue'">Blue</option>
+                              <option v-bind:value="'green'">Green</option>
+                              <option v-bind:value="'black'">Black</option>
+                            </select>
+                          </div>
                           <span
                             v-if="!$v.color.required && $v.color.$dirty"
                             class="text-danger"
@@ -99,13 +100,14 @@
                         </div>
                         <div class="form-group">
                           <label for="disabledTextInput">Size</label>
-                          <input
-                            v-model="size"
-                            type="text"
-                            id="disabledTextInput"
-                            class="form-control"
-                            placeholder="enter name product"
-                          />
+                          <div>
+                            <select v-model="size" class="custom-select">
+                              <option v-bind:value="'m'">M</option>
+                              <option v-bind:value="'l'">L</option>
+                              <option v-bind:value="'xl'">XL</option>
+                              <option v-bind:value="'xxl'">XXL</option>
+                            </select>
+                          </div>
                           <span
                             v-if="!$v.size.required && $v.size.$dirty"
                             class="text-danger"
@@ -117,7 +119,15 @@
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" @click="CHANGE_ACTICE_MODAL_ADD">Close</button>
-                  <button type="submit" class="btn btn-primary">Save changes</button>
+                  <button type="submit" class="btn btn-primary" :disabled="this.isStatus">
+                    <div v-if="this.isStatus">
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        Đang tải...
+                    </div>
+                    <div v-else>
+                      Thêm sản phẩm
+                    </div>
+                  </button>
                 </div>
               </form>
             </div>
@@ -135,16 +145,17 @@ import { mapActions, mapGetters, mapMutations } from "vuex";
 export default {
   data() {
     return {
-      categoryId: "",
+      category_id: "",
       name: "",
       avatar: "",
       price: "",
       color: "",
-      size: ""
+      size: "",
+      status: false
     };
   },
   validations: {
-    categoryId: { required },
+    category_id: { required },
     name: { required },
     avatar: { required },
     price: { required, numeric },
@@ -153,19 +164,20 @@ export default {
   },
   methods: {
     ...mapActions(["getCategories", "addProduct", "isAddActiceModal"]),
-    ...mapMutations(["CHANGE_ACTICE_MODAL_ADD"]),
+    ...mapMutations(["CHANGE_ACTICE_MODAL_ADD", "CHANGE_STATUS"]),
     submitForm() {
       this.$v.$touch();
       if (!this.$v.$invalid) {
+        this.CHANGE_STATUS();
         let formData = new FormData();
         formData.append("img", this.avatar);
-        formData.append("categoryId", this.categoryId);
+        formData.append("category_id", this.category_id);
         formData.append("name", this.name);
         formData.append("price", this.price);
         formData.append("color", this.color);
         formData.append("size", this.size);
         this.addProduct(formData);
-        this.categoryId = ''
+        this.category_id = ''
         this.name = ''
         this.avatar = ''
         this.price = ''
@@ -179,7 +191,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["islistCategories", "isActiveModalAdd"])
+    ...mapGetters(["islistCategories", "isActiveModalAdd", "isStatus"])
   },
   created() {
     this.getCategories();

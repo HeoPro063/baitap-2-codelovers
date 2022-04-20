@@ -29,7 +29,7 @@
                             </select>
                           </div>
                           <span
-                            v-if="!$v.dataEdit.category_id.required && $v.categoryId.$dirty"
+                            v-if="!$v.dataEdit.category_id.required && $v.dataEdit.categoryId.$dirty"
                             class="text-danger"
                           >Required field!</span>
                         </div>
@@ -44,7 +44,7 @@
                             name="name"
                           />
                           <span
-                            v-if="!$v.dataEdit.name.required && $v.name.$dirty"
+                            v-if="!$v.dataEdit.name.required && $v.dataEdit.name.$dirty"
                             class="text-danger"
                           >Required field!</span>
                         </div>
@@ -72,39 +72,41 @@
                             placeholder="enter name product"
                           />
                           <span
-                            v-if="!$v.dataEdit.price.required && $v.price.$dirty"
+                            v-if="!$v.dataEdit.price.required && $v.dataEdit.price.$dirty"
                             class="text-danger"
                           >Required field!</span>
                           <span
-                            v-if="!$v.dataEdit.price.numeric && $v.price.$dirty"
+                            v-if="!$v.dataEdit.price.numeric && $v.dataEdit.price.$dirty"
                             class="text-danger"
                           >Numeric field!</span>
                         </div>
                         <div class="form-group">
                           <label for="disabledTextInput">Color</label>
-                          <input
-                            v-model="dataEdit.color"
-                            type="text"
-                            id="disabledTextInput"
-                            class="form-control"
-                            placeholder="enter name product"
-                          />
+                         <div>
+                            <select v-model="dataEdit.color" class="custom-select">
+                              <option :selected="dataEdit.color == 'red'" v-bind:value="'red'">Red</option>
+                              <option :selected="dataEdit.color == 'blue'" v-bind:value="'blue'">Blue</option>
+                              <option :selected="dataEdit.color == 'green'" v-bind:value="'green'">Green</option>
+                              <option :selected="dataEdit.color == 'black'" v-bind:value="'black'">Black</option>
+                            </select>
+                          </div>
                           <span
-                            v-if="!$v.dataEdit.color.required && $v.color.$dirty"
+                            v-if="!$v.dataEdit.color.required && $v.dataEdit.color.$dirty"
                             class="text-danger"
                           >Required field!</span>
                         </div>
                         <div class="form-group">
                           <label for="disabledTextInput">Size</label>
-                          <input
-                            v-model="dataEdit.size"
-                            type="text"
-                            id="disabledTextInput"
-                            class="form-control"
-                            placeholder="enter name product"
-                          />
+                         <div>
+                            <select v-model="dataEdit.size" class="custom-select">
+                              <option :selected="dataEdit.size == 'm'" v-bind:value="'m'">M</option>
+                              <option :selected="dataEdit.size == 'l'" v-bind:value="'l'">L</option>
+                              <option :selected="dataEdit.size == 'xl'" v-bind:value="'xl'">XL</option>
+                              <option :selected="dataEdit.size == 'xxl'" v-bind:value="'xxl'">XXL</option>
+                            </select>
+                          </div>
                           <span
-                            v-if="!$v.dataEdit.size.required && $v.size.$dirty"
+                            v-if="!$v.dataEdit.size.required && $v.dataEdit.size.$dirty"
                             class="text-danger"
                           >Required field!</span>
                         </div>
@@ -114,7 +116,15 @@
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" @click="CHANGE_ACTICE_MODAL_UPDATE">Close</button>
-                  <button type="submit" class="btn btn-primary">Update</button>
+                  <button type="submit" class="btn btn-primary" :disabled="this.isStatus">
+                    <div v-if="this.isStatus">
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        Đang tải...
+                    </div>
+                    <div v-else>
+                      Cập nhật sản phẩm
+                    </div>
+                  </button>
                 </div>
               </form>
             </div>
@@ -147,13 +157,14 @@ export default {
   },
   methods: {
     ...mapActions(["getCategories", "editProduct", "isUpdateActiceModal"]),
-    ...mapMutations(["CHANGE_ACTICE_MODAL_UPDATE"]),
+    ...mapMutations(["CHANGE_ACTICE_MODAL_UPDATE", "CHANGE_STATUS"]),
     submitForm() {
       this.$v.$touch();
       if (!this.$v.$invalid) {
+        this.CHANGE_STATUS();
         let formData = new FormData();
         if(this.avatar !== null){
-          formData.append("img", this.avatar);
+          formData.append("img_edit", this.avatar);
         }
         formData.append("id", this.dataEdit.id);
         formData.append("category_id", this.dataEdit.category_id);
@@ -173,7 +184,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["islistCategories", "isActiveModalUpdate"]),
+    ...mapGetters(["islistCategories", "isActiveModalUpdate", "isStatus"]),
   },
   created() {
     this.getCategories();

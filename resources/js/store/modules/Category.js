@@ -9,7 +9,7 @@ const state = {
 const getters = {
     isListCategories: state => state.listCategory,
     isAlert: state => state.showAlert,
-    isPaginate: state => state.paginate    
+    isPaginate: state => state.paginate,    
 }
 
 const actions = {
@@ -51,19 +51,17 @@ const actions = {
     },
     async getPaginateCategory({commit}, dataGet){
         try {
-
-            const page_url = dataGet.url_get
-            const dataSearch = {
-                search: dataGet.dataSeach
-            } 
-            const res = await axios.post(page_url, dataSearch)
-            let dataPaginate = {
-                current_page: res.data.current_page,
-                last_page: res.data.last_page,
-                next_page_url: res.data.next_page_url,
-                prev_page_url: res.data.prev_page_url,
+            let dataRequest = {
+                search : dataGet.dataSearch
             }
-            commit('GET_CATTEGORIES', res.data.data)
+            let url = dataGet.url_get;
+            const res = await axios.post(url, dataRequest)
+            let dataPaginate = {
+                limit: res.data.limit,
+                page: Number(res.data.page),
+                total_page: res.data.total_page,
+            }
+            commit('GET_CATTEGORIES', res.data.data_hits)
             commit('PUSH_PAGINATE', dataPaginate)
         } catch (error) {
             console.log(error)
@@ -76,6 +74,9 @@ const mutations = {
         state.listCategory = data
     },
     ADD_CATEGORY(state, data){
+        if(state.listCategory == null){
+            state.listCategory = []
+        }
         state.listCategory.unshift(data)
     },
     GET_ALERT(state, status){

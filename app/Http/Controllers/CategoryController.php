@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Categories;
+use App\Models\Products;
+use Elasticsearch\ClientBuilder;
+
 class CategoryController extends Controller
 {
     /**
@@ -11,6 +14,18 @@ class CategoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    protected $client;
+    protected $index;
+    protected $type;
+    public function __construct() {
+        $this->index = 'categories';
+        $this->type =  '_doc';   
+        $this->client = ClientBuilder::create()->build();
+        $exists = $this->client->indices()->exists(['index' => $this->index]);
+        if(!$exists)
+            $this->client->indices()->create(['index' => $this->index]);
+    }
     public function index()
     {
         //
@@ -36,11 +51,25 @@ class CategoryController extends Controller
         $this->validate($request, [
             'name' => 'required|unique:categories',
         ]);
-        return Categories::create([
-            'name' => $request->name,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        $categories = new Categories;
+        $categories->name =  $request->name;
+        $categories->created_at = now();
+        $categories->updated_at = now();
+        if($categories->save()){
+            $params = [
+                "index" => $this->index,
+                "type" => $this->type,
+                'id' => $categories->id,
+                'body' => [
+                    'id' => $categories->id,
+                    'name' => $request->name,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]
+            ];
+            $res = $this->client->index($params);
+            return $params['body'];
+        }
     }
 
     /**
@@ -51,13 +80,99 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {   
-        $query = Categories::select('id', 'name');
+        $params = [
+            "index" => $this->index,
+            "type" => $this->type,
+            "body" => [
+                "query" => [
+                    "match_all" => (object)[],
+                ],
+            ]
+        ];
+        $search = [];
+        $get_page = $request->get('page');
+        $page = isset($get_page) ? $get_page : 1;
+        $search['status'] = false; 
         if($request->search != ''){
-            $query->where(function ($q) use ($request) {
-                $q->orWhere('name', 'like', $request->search.'%');
-            });
+            $params = [
+                "index" => $this->index,
+                "type" => $this->type,
+                "body" => [
+                    "query" => [
+                        "bool" => [
+                            "should" => [
+                                ['match' => ['name' => $request->search]],
+                            ]
+                        ]
+                    ],
+                    'sort' => [
+                        'id' => [
+                            'order' => 'desc'
+                        ]
+                    ]
+                ]
+            ];
+            $search['text'] = $request->search; 
+            $search['status'] = true; 
         }
-        return $query->orderBy('id', 'desc')->paginate(3);
+        $res = $this->client->search($params);
+        $datas = $res['hits']['hits'];
+        $total = $res['hits']['total']['value'];
+        return $this->reponseDataPaginate($datas, $total, $page, $search);
+    }
+
+    public function reponseDataPaginate($datas, $total, $page, $search){
+        $limit = 3;
+        $from = ($page - 1) * $limit;
+        $total_page =  ceil($total / $limit);
+        if($search['status']){
+            $params = [
+                "index" => $this->index,
+                "type" => $this->type,
+                "size" => $limit,
+                "from" => $from,
+                "body" => [
+                    "query" => [
+                        "bool" => [
+                            "should" => [
+                                ['match' => ['name' => $search['text']]],
+                            ]
+                        ]
+                    ],
+                    'sort' => [
+                        'id' => [
+                            'order' => 'desc'
+                        ]
+                    ]
+                ]
+            ];
+        }else{
+            $params = [
+                "index" => $this->index,
+                "type" => $this->type,
+                "size" => $limit,
+                "from" => $from,
+                "body" => [
+                    "query" => [
+                        "match_all" => (object)[],
+                    ],
+                    'sort' => [
+                        'id' => [
+                            'order' => 'desc'
+                        ]
+                    ]
+                ]
+            ];
+        }
+        $res = $this->client->search($params);
+        $result = [];
+        foreach($res['hits']['hits'] as $key => $item){
+            $result['data_hits'][$key] =  $item['_source'];
+        }
+        $result['total_page'] = $total_page;
+        $result['page'] = $page;
+        $result['limit'] = $limit;
+        return $result;
     }
 
     /**
@@ -86,10 +201,47 @@ class CategoryController extends Controller
             'name' => 'required|unique:categories,name,'.$request->id,
         ]);
         $category = Categories::find($request->id);
-        $category->name = $request->name;
-        $category->updated_at = now();
-        $category->save();
-        return $category;
+        if($category) {
+            $category->name = $request->name;
+            $category->updated_at = now();
+            if($category->save()){
+                $params = [
+                    "index" => $this->index,
+                    "type" => $this->type,
+                    'id' => $request->id,
+                    'body' => [
+                        'id' => $request->id,
+                        'name' => $request->name,
+                        'created_at' => $category->created_at,
+                        'updated_at' => now(),
+                    ]
+                ];
+                $res = $this->client->index($params);
+                $product =  Products::where('category_id', $category->id)->get();
+                foreach($product as $item) {
+                    $params_product = [
+                        "index" => 'products2',
+                        "type" => '_doc',
+                        'id' => $item->id,
+                        'body' => [
+                            'id' => $item->id,
+                            'category_id' => $item->category_id,
+                            'category_name' => $category->name,
+                            'name' => $item->name,
+                            'avatar' => $item->avatar,
+                            'price' => $item->price,
+                            'color' => $item->color,
+                            'size' => $item->size,
+                            'created_at' => $item->created_at,
+                            'updated_at' => $item->updated_at,
+                        ]
+                    ];
+                    $res = $this->client->index($params_product);
+                }
+                return $params['body'];
+            }
+        }        
+        return response()->json(['error' => 'category not found'], 402);
     }
 
     /**
@@ -112,7 +264,22 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        Categories::where('id', $id)->delete();
+        $categories = Categories::where('id', $id)->first();
+        $product  = Products::where('category_id', $categories->id)->get();
+        foreach($product as $item){
+            unlink("images/".$item->avatar);
+            $params_product = [
+                'index' => 'products2',
+                'id'    => $item->id
+            ];
+            $this->client->delete($params_product);
+        }
+        $categories->delete();
+        $params = [
+            'index' => $this->index,
+            'id'    => $id
+        ];
+        $this->client->delete($params);
         return response()->json([
             'mesage' => 'Delete category success'
         ], 200);

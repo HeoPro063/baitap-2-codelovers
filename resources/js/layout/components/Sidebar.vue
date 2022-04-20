@@ -33,7 +33,7 @@
                 </router-link>
               </li>
               <li class="nav-item" @click="changeActiveClick('product')">
-                <router-link to="/product" class="nav-link" v-bind:class="{ active: activeProduct }"> 
+                <router-link to="/category/product" class="nav-link" v-bind:class="{ active: activeProduct }"> 
                   <i class="far fa-circle nav-icon"></i>
                   <p>Product</p>
                 </router-link>

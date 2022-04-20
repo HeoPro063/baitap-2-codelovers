@@ -5,7 +5,10 @@ const state = {
     listCategories: [],
     activeModalAdd: false,
     activeModalUpdate: false,
-    productPaginate: []
+    productPaginate: [],
+    dataProductDetail: [],
+    dataProductRalate: [],
+    status: false
 }
 
 const getters = {
@@ -13,7 +16,10 @@ const getters = {
     islistCategories: state => state.listCategories,
     isActiveModalAdd: state => state.activeModalAdd,
     isActiveModalUpdate: state => state.activeModalUpdate,
-    isProductPaginate: state => state.productPaginate
+    isProductPaginate: state => state.productPaginate,
+    isDataProductDetail: state => state.dataProductDetail,
+    isDataProductRalate: state => state.dataProductRalate,
+    isStatus: state => state.status
 }
 
 const actions = {
@@ -36,6 +42,7 @@ const actions = {
     async addProduct({ commit }, data) {
         try {
             const res = await axios.post('api/category/product/create', data)
+            commit('CHANGE_STATUS')
             commit('ADD_PRODUCT', res.data[0])
             commit('CHANGE_ACTICE_MODAL_ADD')
         } catch (error) {
@@ -46,6 +53,7 @@ const actions = {
         try {
             const id = data.idProduct
             const index = data.index
+            console.log(data)
             await axios.get(`api/category/product/delete/${id}`)
             commit('DELETE_PRODUCT', index)
         } catch (error) {
@@ -59,6 +67,7 @@ const actions = {
             const index = data.index
             const res = await axios.post(`api/category/product/edit`, formData)
             const dataUpdate = res.data[0]
+            commit('CHANGE_STATUS')
             commit('UPDATE_PRODUCT', {dataUpdate, index})
             commit('CHANGE_ACTICE_MODAL_UPDATE')
         } catch (error) {
@@ -67,25 +76,48 @@ const actions = {
     },
     async getPaginateProduct({commit}, dataGet){
         try {
-
             const page_url = dataGet.url_get
-            const dataSearch = {
-                search: dataGet.dataSeach
-            } 
+            var dataSearch = null
+            if(dataGet.action === 1){
+                dataSearch = {
+                    search: dataGet.dataSeach
+                } 
+            }else if(dataGet.action === 2){
+                dataSearch = {
+                    colorOrSize: dataGet.dataSeach
+                } 
+            }else if(dataGet.action === 3){
+                dataSearch = {
+                    idProduct: dataGet.dataSeach
+                } 
+            }else if(dataGet.action === 4){
+                dataSearch = {
+                    idCategory: dataGet.dataSeach
+                } 
+            }
             const res = await axios.post(page_url, dataSearch)
             let dataPaginate = {
-                current_page: res.data.current_page,
-                last_page: res.data.last_page,
-                links: res.data.links,
-                next_page_url: res.data.next_page_url,
-                prev_page_url: res.data.prev_page_url,
+                limit: res.data.limit,
+                page: Number(res.data.page),
+                total_page: res.data.total_page,
             }
-            commit('GET_PRODUCT', res.data.data)
+            commit('GET_PRODUCT', res.data.data_hits)
             commit('PUSH_PAGINATE_PRODUCT', dataPaginate)
         } catch (error) {
             console.log(error)
         }
-    }
+    },
+    async getDetailProduct({commit}, data){
+        try {
+            const res = await axios.get(`api/category/product/show/${data}`)
+            const dataDetail = res.data[0].product_detail;
+            const dataRalate = res.data[0].product_ralate;
+            commit('ADD_PRODUCT_DETAIL', dataDetail)
+            commit('ADD_PRODUCT_RALATE', dataRalate)
+        } catch (error) {
+            console.log(error)
+        }
+    },
 }
 
 const mutations = {
@@ -96,6 +128,9 @@ const mutations = {
         state.listCategories = data
     }, 
     ADD_PRODUCT(state, data){
+        if(state.listProduct == null){
+            state.listProduct = []
+        }
         state.listProduct.unshift(data)
     },
     CHANGE_ACTICE_MODAL_ADD(state){
@@ -112,6 +147,19 @@ const mutations = {
     },
     PUSH_PAGINATE_PRODUCT(state, data){
         state.productPaginate = data
+    },
+    ADD_PRODUCT_DETAIL(state, data){
+        state.dataProductDetail = data
+    },
+    ADD_PRODUCT_RALATE(state, data){
+        state.dataProductRalate = data
+    },
+    RESET_DATA_PRODUCT_DETAIL(state){
+        state.dataProductRalate = []
+        state.dataProductDetail = []
+    },
+    CHANGE_STATUS(state) {
+        state.status = !state.status
     }
 }
 

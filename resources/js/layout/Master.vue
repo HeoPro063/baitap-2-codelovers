@@ -42,3 +42,13 @@ export default {
     }
 }
 </script>
+
+
+<style>
+    .cursor-pointer {
+        cursor: pointer;
+    }
+    .item-product:hover{
+    background: rgb(243, 241, 241);
+  }
+</style>

@@ -1,12 +1,33 @@
 <template>
   <div class="container-fluid">
     <div class="row">
-      <div class="col-md-12">
+      <div class="col-md-2 mt-5">
+          <ListColor :dataGet="dataGet" />
+          <ListSize :dataGet="dataGet" />
+      </div>
+      <div class="col-md-10">
         <div class="card-header justify-content-between">
           <div class="container">
             <div class="row">
-              <div class="col-md-8">
-                <h3 class="card-title">Categories</h3>
+              <div class="col-md-2">
+                <h3 class="card-title cursor-pointer" @click="resetData">Categories</h3>
+              </div>
+              <div class="col-md-2">
+                 <select class="custom-select" @change="searchProductCate" v-model="searchProductCategory">
+                  <option value="" selected>Theo danh mục</option>
+                  <option
+                            v-for="item  in islistCategories"
+                            :key="item.id"
+                            :value="item.id"
+                          >{{item.name}}</option>
+                </select>
+              </div>
+              <div class="col-md-2">
+                <select class="custom-select">
+                  <option>Tất cả</option>
+                  <option>Giá lớn nhất</option>
+                  <option>Giá nhỏ nhất</option>
+                </select>
               </div>
               <div class="col-md-2">
                 <div class="input-group">
@@ -20,6 +41,13 @@
                     />
                   </div>
                 </div>
+              </div>
+              <div class="col-md-2">
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  @click="submitSearch"
+                >Tìm kiếm</button>
               </div>
               <div class="col-md-2">
                 <button
@@ -40,78 +68,79 @@
                 <th>Category</th>
                 <th>Name Product</th>
                 <th>Avatar</th>
-                <th>Price</th>
-                <th>Color</th>
-                <th>Size</th>
                 <th>Action</th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(item , index) in isListProduct" :key="item.id">
-                <td>{{index}}</td>
-                <th>{{item.nameCategory}}</th>
-                <td>{{item.name}}</td>
-                <td>
-                  <img
-                    style="width:150px;height:150px"
-                    :src="getImgUrl(item.avatar)"
-                    alt="..."
-                    class="rounded img-thumbnail"
-                  />
-                </td>
-                <td>{{item.price}}</td>
-                <td>{{item.color}}</td>
-                <td>{{item.size}}</td>
-                <td>
-                  <button
-                    type="button"
-                    class="btn btn-secondary"
+              <tr v-for="(item , index) in isListProduct" :key="item.id" class="item-product cursor-pointer">
+                  <td>{{index}}</td>
+                  <th>{{item.category_name}}</th>
+                  <td
+                    @click="showDetailProduct(item.id)"
+                    class="text text-primary"
                     data-toggle="modal"
-                    data-target="#exampleModal2"
-                    @click="clickEditProduct({
-                      index: index, 
-                      id: item.id, 
-                      category_id: item.category_id,
-                      name: item.name,
-                      avatar: item.avatar,
-                      price: item.price,
-                      color: item.color,
-                      size: item.size,
-                    })"
-                  >Edit</button>
-                  <button
-                    class="btn btn-danger"
-                    data-toggle="modal"
-                    data-target="#exampleModal3"
-                    @click="clickDeleteProduct(item.id, index)"
-                  >Delete</button>
-                </td>
+                    data-target="#exampleModal"
+                     data-backdrop="static" data-keyboard="false"
+                    >
+                      {{jsUcfirst(item.name)}}
+                  </td>
+                  <td>
+                    <img
+                      style="width:150px;height:150px"
+                      :src="getImgUrl(item.avatar)"
+                      alt="..."
+                      class="rounded img-thumbnail"
+                    />
+                  </td>
+                  <td>
+                    <button
+                      type="button"
+                      class="btn btn-secondary"
+                      data-toggle="modal"
+                      data-target="#exampleModal2"
+                      @click="clickEditProduct({
+                        index: index, 
+                        id: item.id, 
+                        category_id: item.category_id,
+                        name: item.name,
+                        avatar: item.avatar,
+                        price: item.price,
+                        color: item.color,
+                        size: item.size,
+                      })"
+                    >Edit</button>
+                    <button
+                      class="btn btn-danger"
+                      data-toggle="modal"
+                      data-target="#exampleModal3"
+                      @click="clickDeleteProduct(item.id, index)"
+                    >Delete</button>
+                  </td>
               </tr>
             </tbody>
           </table>
         </div>
         <!-- /.card-body -->
-        <div class="card-footer clearfix">
+        <div class="card-footer clearfix" v-if="isProductPaginate.total_page > 1">
           <ul class="pagination pagination-sm m-0 float-right">
-            <li class="page-item" v-bind:class="[{disabled : !isProductPaginate.prev_page_url}]">
-              <a class="page-link cursor-pointer" @click="fetchCustomer(isProductPaginate.prev_page_url)" >&laquo;</a>
+            <li class="page-item"   v-bind:class="[{disabled : isProductPaginate.page === 1}]">
+              <a class="page-link cursor-pointer" @click="fetchCustomer('prev')">&laquo;</a>
             </li>
-            <div  style="display: flex" v-for="item in isProductPaginate.links" :key="item.id">
-              <li v-bind:class="[{active : item.active}]" v-if="item.label !== '&laquo; Previous' && item.label !== 'Next &raquo;'" class="page-item">
-                <a class="page-link cursor-pointer" @click="fetchCustomer(item.url)">{{item.label}}</a>
+            <div style="display: flex" v-for="item in isProductPaginate.total_page" :key="item.id">
+              <li class="page-item" v-bind:class="[{active : isProductPaginate.page === item}]" @click="fetchCustomer(item)">
+                <a class="page-link cursor-pointer">{{item}}</a>
               </li>
             </div>
-            <li class="page-item" v-bind:class="[{disabled : !isProductPaginate.next_page_url}]">
-              <a class="page-link cursor-pointer" @click="fetchCustomer(isProductPaginate.next_page_url)" >&raquo;</a>
+            <li class="page-item" v-bind:class="[{disabled : isProductPaginate.page === isProductPaginate.total_page}]" >
+              <a class="page-link cursor-pointer" @click="fetchCustomer('next')">&raquo;</a>
             </li>
           </ul>
         </div>
-
-       
         <!-- add modal -->
         <AddModal />
         <DeleteModal :dataDelete="dataDelete" />
         <EditModal :dataEdit="dataEdit" />
+        <Detail :dataGet="dataGet" />
       </div>
     </div>
   </div>
@@ -123,15 +152,11 @@ import { mapActions, mapGetters, mapMutations } from "vuex";
 import AddModal from "../layout/modal/product/Add.vue";
 import DeleteModal from "../layout/modal/product/DeleteModal.vue";
 import EditModal from "../layout/modal/product/Edit.vue";
+import Detail from "../layout/modal/product/Detail.vue";
+import ListColor from "../layout/components/ListColor.vue";
+import ListSize from "../layout/components/ListSize.vue";
 
 export default {
-  watch: {
-    search() {
-      this.dataGet.dataSeach = this.search;
-      this.dataGet.url_get = "api/category/product/paginate";
-      this.getPaginateProduct(this.dataGet);
-    }
-  },
   data() {
     return {
       dataDelete: {
@@ -150,17 +175,19 @@ export default {
       },
       dataGet: {
         url_get: "api/category/product/paginate",
-        dataSeach: ""
+        dataSeach: "",
+        action: 1
       },
-      search: ""
+      search: "",
+      searchProductCategory: "" 
     };
   },
   computed: {
-    ...mapGetters(["isListProduct", "isProductPaginate"]),
+    ...mapGetters(["isListProduct", "isProductPaginate", "islistCategories"]),
     
   },
   methods: {
-    ...mapActions(["getProducts", "getPaginateProduct"]),
+    ...mapActions(["getProducts", "getPaginateProduct", "getDetailProduct", "getDetailProduct"]),
     ...mapMutations(["CHANGE_ACTICE_MODAL_ADD", "CHANGE_ACTICE_MODAL_UPDATE"]),
     getImgUrl(pet) {
       return "images/" + pet;
@@ -180,26 +207,74 @@ export default {
       this.dataEdit.size = obj.size;
       this.CHANGE_ACTICE_MODAL_UPDATE();
     },
-    fetchCustomer(page_url) {
-      this.dataGet.url_get = page_url;
+    fetchCustomer(page) {
+      let page_link;
+
+      if(page === 'prev'){
+        page_link = this.isProductPaginate.page - 1;
+      }else if(page === 'next'){
+        page_link = this.isProductPaginate.page + 1;
+      }else{
+        page_link = page;
+      }
+      this.dataGet.url_get = `api/category/product/paginate?page=${page_link}`;
       this.getPaginateProduct(this.dataGet);
+    },
+    submitSearch(){
+      this.dataGet.dataSeach = this.search;
+      this.dataGet.url_get = "api/category/product/paginate"
+      this.dataGet.action = 1;
+      this.getPaginateProduct(this.dataGet);
+    },
+    resetData() {
+      this.dataGet.dataSeach = "";
+      this.search = "";
+      this.dataGet.url_get = "api/category/product/paginate";
+      this.action = 1;
+      this.getPaginateProduct(this.dataGet);
+    },
+    detailProduct(id){
+      this.getDetailProduct(id)
+    },
+    showDetailProduct(id){
+      this.getDetailProduct(id)
+    },
+    jsUcfirst(string) 
+    {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    },
+    formatNumber(price) {
+        var formatter = price ? price.toLocaleString('vi', {style : 'currency', currency : 'VND'}) : '';
+        return formatter
+    },
+    searchProductCate() {
+      if(this.searchProductCategory != '') {
+        this.dataGet.url_get = "api/category/product/paginate",
+        this.dataGet.dataSeach = this.searchProductCategory,
+        this.dataGet.action = 4
+        this.getPaginateProduct(this.dataGet);
+      }else{
+        this.dataGet.url_get = "api/category/product/paginate",
+        this.dataGet.dataSeach = "",
+        this.dataGet.action = 1
+        this.getPaginateProduct(this.dataGet);
+      }
     }
   },
   created() {
-    // this.getProducts();
     this.getPaginateProduct(this.dataGet);
-
   },
   components: {
     AddModal,
     DeleteModal,
-    EditModal
+    EditModal,
+    ListColor,
+    ListSize,
+    Detail
   }
 };
 </script>
 
 <style scoped>
-  .cursor-pointer{
-    cursor: pointer;
-  }
+  
 </style>
