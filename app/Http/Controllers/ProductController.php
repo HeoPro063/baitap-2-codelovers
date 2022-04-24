@@ -159,6 +159,20 @@ class ProductController extends Controller
                     ]
                 ]
             ];
+        }else if($request->SearchPrice != ''){
+            if($request->SearchPrice == 'max') {
+                $params['body']['sort'] =  [
+                    'price' => [
+                        'order' => 'desc'
+                    ]
+                ];
+            }else{
+                $params['body']['sort'] =  [
+                    'price' => [
+                        'order' => 'asc'
+                    ]
+                ];
+            }
         }
         $res = $this->client->search($params);
         $total = $res['hits']['total']['value'];

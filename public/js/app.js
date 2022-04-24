@@ -5734,13 +5734,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
 /* harmony import */ var _layout_modal_product_Add_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../layout/modal/product/Add.vue */ "./resources/js/layout/modal/product/Add.vue");
 /* harmony import */ var _layout_modal_product_DeleteModal_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../layout/modal/product/DeleteModal.vue */ "./resources/js/layout/modal/product/DeleteModal.vue");
 /* harmony import */ var _layout_modal_product_Edit_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layout/modal/product/Edit.vue */ "./resources/js/layout/modal/product/Edit.vue");
 /* harmony import */ var _layout_modal_product_Detail_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../layout/modal/product/Detail.vue */ "./resources/js/layout/modal/product/Detail.vue");
 /* harmony import */ var _layout_components_ListColor_vue__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../layout/components/ListColor.vue */ "./resources/js/layout/components/ListColor.vue");
 /* harmony import */ var _layout_components_ListSize_vue__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../layout/components/ListSize.vue */ "./resources/js/layout/components/ListSize.vue");
+/* harmony import */ var _layout_components_SearchPrice_vue__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../layout/components/SearchPrice.vue */ "./resources/js/layout/components/SearchPrice.vue");
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
@@ -5882,10 +5883,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
-//
-//
-//
+
 
 
 
@@ -5912,15 +5910,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       },
       dataGet: {
         url_get: "api/category/product/paginate",
-        dataSeach: "",
+        dataSearch: "",
         action: 1
       },
       search: "",
       searchProductCategory: ""
     };
   },
-  computed: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_6__.mapGetters)(["isListProduct", "isProductPaginate", "islistCategories"])),
-  methods: _objectSpread(_objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_6__.mapActions)(["getProducts", "getPaginateProduct", "getDetailProduct", "getDetailProduct"])), (0,vuex__WEBPACK_IMPORTED_MODULE_6__.mapMutations)(["CHANGE_ACTICE_MODAL_ADD", "CHANGE_ACTICE_MODAL_UPDATE"])), {}, {
+  computed: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_7__.mapGetters)(["isListProduct", "isProductPaginate", "islistCategories"])),
+  methods: _objectSpread(_objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_7__.mapActions)(["getProducts", "getPaginateProduct", "getDetailProduct", "getDetailProduct"])), (0,vuex__WEBPACK_IMPORTED_MODULE_7__.mapMutations)(["CHANGE_ACTICE_MODAL_ADD", "CHANGE_ACTICE_MODAL_UPDATE"])), {}, {
     getImgUrl: function getImgUrl(pet) {
       return "images/" + pet;
     },
@@ -5954,13 +5952,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.getPaginateProduct(this.dataGet);
     },
     submitSearch: function submitSearch() {
-      this.dataGet.dataSeach = this.search;
+      this.dataGet.dataSearch = this.search;
       this.dataGet.url_get = "api/category/product/paginate";
       this.dataGet.action = 1;
       this.getPaginateProduct(this.dataGet);
     },
     resetData: function resetData() {
-      this.dataGet.dataSeach = "";
+      this.dataGet.dataSearch = "";
       this.search = "";
       this.dataGet.url_get = "api/category/product/paginate";
       this.action = 1;
@@ -5984,10 +5982,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     },
     searchProductCate: function searchProductCate() {
       if (this.searchProductCategory != '') {
-        this.dataGet.url_get = "api/category/product/paginate", this.dataGet.dataSeach = this.searchProductCategory, this.dataGet.action = 4;
+        this.dataGet.url_get = "api/category/product/paginate", this.dataGet.dataSearch = this.searchProductCategory, this.dataGet.action = 4;
         this.getPaginateProduct(this.dataGet);
       } else {
-        this.dataGet.url_get = "api/category/product/paginate", this.dataGet.dataSeach = "", this.dataGet.action = 1;
+        this.dataGet.url_get = "api/category/product/paginate", this.dataGet.dataSearch = "", this.dataGet.action = 1;
         this.getPaginateProduct(this.dataGet);
       }
     }
@@ -6001,7 +5999,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     EditModal: _layout_modal_product_Edit_vue__WEBPACK_IMPORTED_MODULE_2__["default"],
     ListColor: _layout_components_ListColor_vue__WEBPACK_IMPORTED_MODULE_4__["default"],
     ListSize: _layout_components_ListSize_vue__WEBPACK_IMPORTED_MODULE_5__["default"],
-    Detail: _layout_modal_product_Detail_vue__WEBPACK_IMPORTED_MODULE_3__["default"]
+    Detail: _layout_modal_product_Detail_vue__WEBPACK_IMPORTED_MODULE_3__["default"],
+    SearchPrice: _layout_components_SearchPrice_vue__WEBPACK_IMPORTED_MODULE_6__["default"]
   }
 });
 
@@ -6274,7 +6273,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   methods: _objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapActions)(['getPaginateProduct', 'getColor'])), {}, {
     chooseColor: function chooseColor() {
       this.dataGet.action = 2;
-      this.dataGet.dataSeach = this.searchColor;
+      this.dataGet.dataSearch = this.searchColor;
       this.getPaginateProduct(this.dataGet);
     }
   }),
@@ -6331,7 +6330,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   methods: _objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapActions)(['getPaginateProduct', 'getSize'])), {}, {
     chooseSize: function chooseSize() {
       this.dataGet.action = 5;
-      this.dataGet.dataSeach = this.searchSize;
+      this.dataGet.dataSearch = this.searchSize;
       this.getPaginateProduct(this.dataGet);
     }
   }),
@@ -6505,6 +6504,53 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   methods: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapActions)(['logout']))
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/layout/components/SearchPrice.vue?vue&type=script&lang=js&":
+/*!*************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/layout/components/SearchPrice.vue?vue&type=script&lang=js& ***!
+  \*************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  props: ['dataGet'],
+  data: function data() {
+    return {
+      dataSearch: ''
+    };
+  },
+  methods: _objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapActions)(['getPaginateProduct'])), {}, {
+    searchProductPrice: function searchProductPrice() {
+      this.dataGet.action = 6;
+      this.dataGet.dataSearch = this.dataSearch;
+      this.getPaginateProduct(this.dataGet);
+    }
+  })
 });
 
 /***/ }),
@@ -7494,7 +7540,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       return text;
     },
     redirect: function redirect(id) {
-      this.dataGet.dataSeach = id;
+      this.dataGet.dataSearch = id;
       this.dataGet.action = 3;
       this.dataGet.url_get = "api/category/product/paginate";
       this.getPaginateProduct(this.dataGet);
@@ -9039,23 +9085,27 @@ var actions = {
 
               if (dataGet.action === 1) {
                 dataSearch = {
-                  search: dataGet.dataSeach
+                  search: dataGet.dataSearch
                 };
               } else if (dataGet.action === 2) {
                 dataSearch = {
-                  idColor: dataGet.dataSeach
+                  idColor: dataGet.dataSearch
                 };
               } else if (dataGet.action === 3) {
                 dataSearch = {
-                  idProduct: dataGet.dataSeach
+                  idProduct: dataGet.dataSearch
                 };
               } else if (dataGet.action === 4) {
                 dataSearch = {
-                  idCategory: dataGet.dataSeach
+                  idCategory: dataGet.dataSearch
                 };
               } else if (dataGet.action === 5) {
                 dataSearch = {
-                  idSize: dataGet.dataSeach
+                  idSize: dataGet.dataSearch
+                };
+              } else if (dataGet.action === 6) {
+                dataSearch = {
+                  SearchPrice: dataGet.dataSearch
                 };
               }
 
@@ -34061,6 +34111,45 @@ component.options.__file = "resources/js/layout/components/Preloader.vue"
 
 /***/ }),
 
+/***/ "./resources/js/layout/components/SearchPrice.vue":
+/*!********************************************************!*\
+  !*** ./resources/js/layout/components/SearchPrice.vue ***!
+  \********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _SearchPrice_vue_vue_type_template_id_2d54ab5f___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./SearchPrice.vue?vue&type=template&id=2d54ab5f& */ "./resources/js/layout/components/SearchPrice.vue?vue&type=template&id=2d54ab5f&");
+/* harmony import */ var _SearchPrice_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./SearchPrice.vue?vue&type=script&lang=js& */ "./resources/js/layout/components/SearchPrice.vue?vue&type=script&lang=js&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+;
+var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _SearchPrice_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _SearchPrice_vue_vue_type_template_id_2d54ab5f___WEBPACK_IMPORTED_MODULE_0__.render,
+  _SearchPrice_vue_vue_type_template_id_2d54ab5f___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/layout/components/SearchPrice.vue"
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (component.exports);
+
+/***/ }),
+
 /***/ "./resources/js/layout/components/Sidebar.vue":
 /*!****************************************************!*\
   !*** ./resources/js/layout/components/Sidebar.vue ***!
@@ -34781,6 +34870,22 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/layout/components/SearchPrice.vue?vue&type=script&lang=js&":
+/*!*********************************************************************************!*\
+  !*** ./resources/js/layout/components/SearchPrice.vue?vue&type=script&lang=js& ***!
+  \*********************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_SearchPrice_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./SearchPrice.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/layout/components/SearchPrice.vue?vue&type=script&lang=js&");
+ /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_SearchPrice_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
 /***/ "./resources/js/layout/components/Sidebar.vue?vue&type=script&lang=js&":
 /*!*****************************************************************************!*\
   !*** ./resources/js/layout/components/Sidebar.vue?vue&type=script&lang=js& ***!
@@ -35365,6 +35470,23 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Preloader_vue_vue_type_template_id_02bb9a54___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
 /* harmony export */ });
 /* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Preloader_vue_vue_type_template_id_02bb9a54___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Preloader.vue?vue&type=template&id=02bb9a54& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/layout/components/Preloader.vue?vue&type=template&id=02bb9a54&");
+
+
+/***/ }),
+
+/***/ "./resources/js/layout/components/SearchPrice.vue?vue&type=template&id=2d54ab5f&":
+/*!***************************************************************************************!*\
+  !*** ./resources/js/layout/components/SearchPrice.vue?vue&type=template&id=2d54ab5f& ***!
+  \***************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_SearchPrice_vue_vue_type_template_id_2d54ab5f___WEBPACK_IMPORTED_MODULE_0__.render),
+/* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_SearchPrice_vue_vue_type_template_id_2d54ab5f___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
+/* harmony export */ });
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_SearchPrice_vue_vue_type_template_id_2d54ab5f___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./SearchPrice.vue?vue&type=template&id=2d54ab5f& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/layout/components/SearchPrice.vue?vue&type=template&id=2d54ab5f&");
 
 
 /***/ }),
@@ -36340,7 +36462,12 @@ var render = function () {
                   ),
                 ]),
                 _vm._v(" "),
-                _vm._m(0),
+                _c(
+                  "div",
+                  { staticClass: "col-md-2" },
+                  [_c("SearchPrice", { attrs: { dataGet: _vm.dataGet } })],
+                  1
+                ),
                 _vm._v(" "),
                 _c("div", { staticClass: "col-md-2" }, [
                   _c("div", { staticClass: "input-group" }, [
@@ -36403,7 +36530,7 @@ var render = function () {
           _vm._v(" "),
           _c("div", { staticClass: "card-body" }, [
             _c("table", { staticClass: "table table-bordered" }, [
-              _vm._m(1),
+              _vm._m(0),
               _vm._v(" "),
               _c(
                 "tbody",
@@ -36604,20 +36731,6 @@ var render = function () {
   ])
 }
 var staticRenderFns = [
-  function () {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-md-2" }, [
-      _c("select", { staticClass: "custom-select" }, [
-        _c("option", [_vm._v("Tất cả")]),
-        _vm._v(" "),
-        _c("option", [_vm._v("Giá lớn nhất")]),
-        _vm._v(" "),
-        _c("option", [_vm._v("Giá nhỏ nhất")]),
-      ]),
-    ])
-  },
   function () {
     var _vm = this
     var _h = _vm.$createElement
@@ -37448,6 +37561,73 @@ var staticRenderFns = [
     )
   },
 ]
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/layout/components/SearchPrice.vue?vue&type=template&id=2d54ab5f&":
+/*!******************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/layout/components/SearchPrice.vue?vue&type=template&id=2d54ab5f& ***!
+  \******************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* binding */ render),
+/* harmony export */   "staticRenderFns": () => (/* binding */ staticRenderFns)
+/* harmony export */ });
+var render = function () {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [
+    _c(
+      "select",
+      {
+        directives: [
+          {
+            name: "model",
+            rawName: "v-model",
+            value: _vm.dataSearch,
+            expression: "dataSearch",
+          },
+        ],
+        staticClass: "custom-select",
+        on: {
+          change: [
+            function ($event) {
+              var $$selectedVal = Array.prototype.filter
+                .call($event.target.options, function (o) {
+                  return o.selected
+                })
+                .map(function (o) {
+                  var val = "_value" in o ? o._value : o.value
+                  return val
+                })
+              _vm.dataSearch = $event.target.multiple
+                ? $$selectedVal
+                : $$selectedVal[0]
+            },
+            _vm.searchProductPrice,
+          ],
+        },
+      },
+      [
+        _c("option", { attrs: { selected: "" }, domProps: { value: "" } }, [
+          _vm._v("Tất cả"),
+        ]),
+        _vm._v(" "),
+        _c("option", { domProps: { value: "max" } }, [_vm._v("Giá lớn nhất")]),
+        _vm._v(" "),
+        _c("option", { domProps: { value: "min" } }, [_vm._v("Giá nhỏ nhất")]),
+      ]
+    ),
+  ])
+}
+var staticRenderFns = []
 render._withStripped = true
 
 

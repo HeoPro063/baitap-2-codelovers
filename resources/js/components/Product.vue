@@ -23,11 +23,7 @@
                 </select>
               </div>
               <div class="col-md-2">
-                <select class="custom-select">
-                  <option>Tất cả</option>
-                  <option>Giá lớn nhất</option>
-                  <option>Giá nhỏ nhất</option>
-                </select>
+              <SearchPrice :dataGet="dataGet"/>
               </div>
               <div class="col-md-2">
                 <div class="input-group">
@@ -146,6 +142,7 @@ import EditModal from "../layout/modal/product/Edit.vue";
 import Detail from "../layout/modal/product/Detail.vue";
 import ListColor from "../layout/components/ListColor.vue";
 import ListSize from "../layout/components/ListSize.vue";
+import SearchPrice from "../layout/components/SearchPrice.vue";
 
 export default {
   data() {
@@ -166,7 +163,7 @@ export default {
       },
       dataGet: {
         url_get: "api/category/product/paginate",
-        dataSeach: "",
+        dataSearch: "",
         action: 1
       },
       search: "",
@@ -212,13 +209,13 @@ export default {
       this.getPaginateProduct(this.dataGet);
     },
     submitSearch(){
-      this.dataGet.dataSeach = this.search;
+      this.dataGet.dataSearch = this.search;
       this.dataGet.url_get = "api/category/product/paginate"
       this.dataGet.action = 1;
       this.getPaginateProduct(this.dataGet);
     },
     resetData() {
-      this.dataGet.dataSeach = "";
+      this.dataGet.dataSearch = "";
       this.search = "";
       this.dataGet.url_get = "api/category/product/paginate";
       this.action = 1;
@@ -241,12 +238,12 @@ export default {
     searchProductCate() {
       if(this.searchProductCategory != '') {
         this.dataGet.url_get = "api/category/product/paginate",
-        this.dataGet.dataSeach = this.searchProductCategory,
+        this.dataGet.dataSearch = this.searchProductCategory,
         this.dataGet.action = 4
         this.getPaginateProduct(this.dataGet);
       }else{
         this.dataGet.url_get = "api/category/product/paginate",
-        this.dataGet.dataSeach = "",
+        this.dataGet.dataSearch = "",
         this.dataGet.action = 1
         this.getPaginateProduct(this.dataGet);
       }
@@ -261,7 +258,8 @@ export default {
     EditModal,
     ListColor,
     ListSize,
-    Detail
+    Detail,
+    SearchPrice
   }
 };
 </script>

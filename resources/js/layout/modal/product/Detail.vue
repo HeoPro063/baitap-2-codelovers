@@ -95,7 +95,7 @@ export default {
       return text
     },
     redirect(id) {
-      this.dataGet.dataSeach = id
+      this.dataGet.dataSearch = id
       this.dataGet.action = 3
       this.dataGet.url_get = "api/category/product/paginate"
       this.getPaginateProduct(this.dataGet)

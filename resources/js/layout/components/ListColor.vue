@@ -32,7 +32,7 @@ export default {
     ...mapActions(['getPaginateProduct', 'getColor']),
     chooseColor() {
       this.dataGet.action = 2;
-      this.dataGet.dataSeach = this.searchColor
+      this.dataGet.dataSearch = this.searchColor
       this.getPaginateProduct(this.dataGet)
     }
   },

@@ -32,7 +32,7 @@ export default {
     ...mapActions(['getPaginateProduct', 'getSize']),
     chooseSize() {
       this.dataGet.action = 5;
-      this.dataGet.dataSeach = this.searchSize
+      this.dataGet.dataSearch = this.searchSize
       this.getPaginateProduct(this.dataGet)
     }
   },
