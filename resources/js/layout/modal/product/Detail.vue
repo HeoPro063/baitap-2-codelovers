@@ -12,8 +12,8 @@
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="exampleModalLabel">Chi tiết sản phẩm</h5>
-          <button @click="closeModalDetail" type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
+          <button @click="closeModalDetail" type="button" class="btn btn-danger" data-dismiss="modal" aria-label="Close">
+          Close
           </button>
         </div>
         <div class="modal-body">
@@ -34,14 +34,15 @@
               </div>
             </div>
             <div class="row">
-              <div v-for="item in this.isDataProductRalate" :key="item.id" class="col m-1">
-                <div class="card">
-                  <img :src="getImgUrl(item.avatar)" class="card-img-top rounded img-thumbnail style-image">
+              <div v-for="item in isDataProductRalate" :key="item.id" class="col-3">
+                <div class="card" style="width: 16rem;">
+                  <img class="card-img-top style-image" :src="getImgUrl(item.avatar)" alt="Card image cap">
                   <div class="card-body">
                     <h5 class="card-title">{{formatString(item.name)}}</h5>
-                    <p class="card-text" >Màu: <span :class="formatStringColor(item.color)">{{item.color}}</span> </p>
-                    <p class="card-text">Size: {{item.size}}</p>
-                    <a @click="redirect(item.id)" class="btn btn-primary cursor-pointer" data-dismiss="modal" aria-label="Close">Xem...</a>
+                    <p class="card-text">Color: <span :class="formatStringColor(item.color)">{{item.color}}</span></p>
+                    <p class="card-text">Price: {{formatNumber(item.price)}}</p>
+                    <p class="card-text">Size: {{formatStringSize(item.size)}}</p>
+                    <button @click="redirect(item.id)" class="btn btn-primary" type="button" data-dismiss="modal" aria-label="Close">View more</button>
                   </div>
                 </div>
               </div>
@@ -54,12 +55,13 @@
 </template>
 
 <script>
+
 import { mapGetters, mapMutations, mapActions } from "vuex";
 export default {
   props: ['dataGet'],
   data() {
     return {
-      detail: ''
+      detail: '',
     }
   },
   computed: {
@@ -101,7 +103,8 @@ export default {
       return "images/" + pet;
     },
     formatString(str){
-      var text = str ? str.length < 15 ? str : str.slice(0, 15) + '...' : ''
+      var str_Uc = str ? this.jsUcfirst(str) : ''
+      var text = str_Uc.length < 15 ? str_Uc : str_Uc.slice(0, 15) + '...'
       return text
     },
     redirect(id) {
@@ -109,7 +112,7 @@ export default {
       this.dataGet.action = 3
       this.dataGet.url_get = "api/category/product/paginate"
       this.getPaginateProduct(this.dataGet)
-    }
+    },
   }
 };
 </script>
@@ -120,8 +123,8 @@ export default {
         margin: auto;
     }
     .style-image{
-      width:150px;
-      height:150px;
+      width:100%;
+      height:200px;
       object-fit: cover;
       margin: 0 auto;
     }

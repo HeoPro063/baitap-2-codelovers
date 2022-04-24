@@ -1,6 +1,7 @@
 <template>
     <div class="wrapper" >
         <div v-if="isAuthenticated">
+
             <!-- <Preloader/> -->
             <Navbar/>
             <Sidebar/>
@@ -36,9 +37,10 @@ export default {
     computed: mapGetters(['isAuthenticated']),
     created() {
         this.athenticated()
+        
     },
     methods: {
-        ...mapActions(['athenticated'])
+        ...mapActions(['athenticated']),
     }
 }
 </script>

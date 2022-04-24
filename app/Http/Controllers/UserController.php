@@ -19,21 +19,28 @@ class UserController extends Controller
 
     public function login(Request $request)
     {
-        $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required']
+        $fields = $request->validate([
+            'email' => 'required|string',
+            'password' => 'required|string'
         ]);
 
-        if (Auth::attempt($request->only('email', 'password'))){
-            return response()->json(Auth::user(), 200);
+        $user = User::where('email', $fields['email'])->first();
+        if(!$user || !Hash::check($fields['password'], $user->password)){
+            return response([
+                'message' => 'Bad creds'
+            ], 401);
         }
-        throw ValidationException::withMessages([
-            'email' =>['The provided credentials are incorect.']
-        ]);
+        $token =  $user->createToken('myapptoken')->plainTextToken;
+        $response = [
+            'user' => $user,
+            'token' => $token
+        ];
+        return response($response, 201);
     }
     
     public function logout()
     {
-        Auth::logout();
+        auth()->user()->tokens()->delete();
+        return ['messege' => 'logout in'];
     }
 }

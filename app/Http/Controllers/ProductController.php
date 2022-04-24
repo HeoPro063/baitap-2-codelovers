@@ -157,7 +157,7 @@ class ProductController extends Controller
     }
 
     public function reponseDataPaginate($total, $page, $params){
-        $limit = 3;
+        $limit = 5;
         $from = ($page - 1) * $limit;
         $total_page =  ceil($total / $limit);
         $params['size'] = $limit;
@@ -185,38 +185,68 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        $Product = Products::find($id);
+        // $Product = Products::find($id);
+
+        $params = [
+            'index' => $this->index,
+            'id'    => $id
+        ];
+        $response = $this->client->get($params);
         return response()->json([
-            $this->responseDataDetail($Product)
+            $this->responseDataDetail($response['_source'])
         ], 200);
     }
 
-    public function responseDataDetail($Product){
+    public function responseDataDetail($product){
         $data = [];
-        $data['product_detail']['id'] = $Product->id; 
-        $data['product_detail']['category_id'] = $Product->category_id;
-        $Category = Categories::find($Product->category_id); 
-        $data['product_detail']['category_name'] = $Category->name; 
-        $data['product_detail']['name'] = $Product->name; 
-        $data['product_detail']['avatar'] = $Product->avatar; 
-        $data['product_detail']['price'] = $Product->price; 
-        $data['product_detail']['color'] = $Product->color; 
-        $data['product_detail']['size'] = $Product->size; 
-        $data['product_detail']['created_at'] = $Product->created_at; 
-        $data['product_detail']['updated_at'] = $Product->updated_at; 
-
+        $data['product_detail'] = $product;
+        $name_first = explode(' ', $product['name']);
+        $params = [
+            "index" => $this->index,
+            "type" => $this->type,
+            "size" => 4,
+            "body" => [
+                "query" => [
+                    "bool" => [
+                        "should" => [
+                            [
+                                "match_phrase_prefix" => [
+                                    "name" => $name_first[0]
+                                ],
+                            ],
+                        ],
+                        "must_not" => [
+                            [
+                                "match" => [
+                                    "id" =>  $product['id']
+                                ]
+                            ],
+                        ],
+                    ]
+                ],
+                'sort' => [
+                    'id' => [
+                        'order' => 'desc'
+                    ]
+                ]
+            ]
+        ];
+        // return $params;
+        $response = $this->client->search($params);
+        $data_product_ralate = $response['hits']['hits'];
         $data['product_ralate'] = [];
-        $product_ralate = Products::where('category_id', $Category->id)->where('id', '<>', $Product->id)->limit(4)->orderBy('id', 'DESC')->get();
-        $data_product_ralate = $this->addProductRalate($product_ralate);
-
-        $count_data = count($data_product_ralate); 
-        $data_product_more = [];
-        if($count_data < 4) {
-            $limit = 4 - $count_data;          
-            $product_more = Products::where('category_id', '<>', $Category->id)->limit($limit)->orderBy('id', 'DESC')->get();
-            $data_product_more = $this->addProductRalate($product_more);
+        foreach($data_product_ralate as $key => $item) {
+            $data['product_ralate'][$key]['id'] = $item['_source']['id'];
+            $data['product_ralate'][$key]['category_id'] = $item['_source']['category_id'];
+            $data['product_ralate'][$key]['category_name'] = $item['_source']['category_name'];
+            $data['product_ralate'][$key]['name'] = $item['_source']['name'];
+            $data['product_ralate'][$key]['avatar'] = $item['_source']['avatar'];
+            $data['product_ralate'][$key]['price'] = $item['_source']['price'];
+            $data['product_ralate'][$key]['color'] = $item['_source']['color'];
+            $data['product_ralate'][$key]['size'] = $item['_source']['size'];
+            $data['product_ralate'][$key]['created_at'] = $item['_source']['created_at'];
+            $data['product_ralate'][$key]['updated_at'] = $item['_source']['updated_at'];
         }
-        $data['product_ralate'] = array_merge($data_product_ralate, $data_product_more);
         return  $data;
     }  
 

@@ -122,7 +122,7 @@ class CategoryController extends Controller
     }
 
     public function reponseDataPaginate($datas, $total, $page, $search){
-        $limit = 3;
+        $limit = 5;
         $from = ($page - 1) * $limit;
         $total_page =  ceil($total / $limit);
         if($search['status']){

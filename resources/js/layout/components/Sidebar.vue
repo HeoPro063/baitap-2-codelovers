@@ -38,6 +38,18 @@
                   <p>Product</p>
                 </router-link>
               </li>
+              <li class="nav-item" @click="changeActiveClick('color')">
+                <router-link to="/color" class="nav-link" v-bind:class="{ active: activeColor }"> 
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Color</p>
+                </router-link>
+              </li>
+              <li class="nav-item" @click="changeActiveClick('size')">
+                <router-link to="/size" class="nav-link" v-bind:class="{ active: activeSize }"> 
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Size</p>
+                </router-link>
+              </li>
             </ul>
           </li>
         
@@ -55,7 +67,9 @@ export default {
     data() {
       return {
         activeCategory: false,
-        activeProduct: false
+        activeProduct: false,
+        activeColor: false,
+        activeSize: false,
       }
     },
     computed: {...mapGetters(['isUser'])},
@@ -65,10 +79,24 @@ export default {
         if(nameActive == 'category'){
           this.activeCategory = true
           this.activeProduct = false
-        }
-        if(nameActive == 'product'){
+          this.activeColor = false
+          this.activeSize = false
+        }else if(nameActive == 'product'){
           this.activeCategory = false
+          this.activeColor = false
           this.activeProduct = true
+          this.activeSize = false
+        }else if(nameActive == 'color') {
+          this.activeCategory = false
+          this.activeProduct = false
+          this.activeColor = true
+          this.activeSize = false
+        }
+        else if(nameActive == 'size') {
+          this.activeCategory = false
+          this.activeProduct = false
+          this.activeColor = false
+          this.activeSize = true
         }
       }
     },
