@@ -23,7 +23,7 @@
                   <h5>Tên sản phẩm: <strong>{{jsUcfirst(this.isDataProductDetail.name)}}</strong> </h5>
                   <p>Loại sản phẩm: <strong>{{jsUcfirst(this.isDataProductDetail.category_name)}}</strong></p>
                   <p>Giá: {{formatNumber(this.isDataProductDetail.price)}}</p>
-                  <p>Màu: <span :class="formatStringColor(this.isDataProductDetail.color)"> {{jsUcfirst(this.isDataProductDetail.color)}}</span></p>
+                  <p>Màu:  {{jsUcfirst(this.isDataProductDetail.color)}}</p>
                   <p>Size: {{formatStringSize(this.isDataProductDetail.size)}}</p>
               </div>
             </div>
@@ -39,7 +39,7 @@
                   <img class="card-img-top style-image" :src="getImgUrl(item.avatar)" alt="Card image cap">
                   <div class="card-body">
                     <h5 class="card-title">{{formatString(item.name)}}</h5>
-                    <p class="card-text">Color: <span :class="formatStringColor(item.color)">{{item.color}}</span></p>
+                    <p class="card-text">Color: {{jsUcfirst(item.color)}}</p>
                     <p class="card-text">Price: {{formatNumber(item.price)}}</p>
                     <p class="card-text">Size: {{formatStringSize(item.size)}}</p>
                     <button @click="redirect(item.id)" class="btn btn-primary" type="button" data-dismiss="modal" aria-label="Close">View more</button>
@@ -81,19 +81,6 @@ export default {
     formatNumber(price) {
         var formatter = price ? price.toLocaleString('vi', {style : 'currency', currency : 'VND'}) : '';
         return formatter
-    },
-    formatStringColor(string){
-      var color = '';
-      if(string === 'red'){
-        color = 'text-danger'
-      }else if(string === 'green') {
-        color = 'text-success' 
-      }else if(string === 'blue'){
-        color = 'text-primary'
-      }else if(string === 'black'){
-        color = 'text-dark'
-      }
-      return color
     },
     formatStringSize(string) {
       var text = string ? string.toUpperCase() : ''

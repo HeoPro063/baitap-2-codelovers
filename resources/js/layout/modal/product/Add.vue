@@ -87,10 +87,11 @@
                           <label for="disabledTextInput">Color</label>
                           <div>
                             <select v-model="color" class="custom-select">
-                              <option v-bind:value="'red'">Red</option>
-                              <option v-bind:value="'blue'">Blue</option>
-                              <option v-bind:value="'green'">Green</option>
-                              <option v-bind:value="'black'">Black</option>
+                               <option
+                                v-for="item  in isListColor"
+                                :key="item.id"
+                                :value="item.id"
+                              >{{item.name}}</option>
                             </select>
                           </div>
                           <span
@@ -102,10 +103,11 @@
                           <label for="disabledTextInput">Size</label>
                           <div>
                             <select v-model="size" class="custom-select">
-                              <option v-bind:value="'m'">M</option>
-                              <option v-bind:value="'l'">L</option>
-                              <option v-bind:value="'xl'">XL</option>
-                              <option v-bind:value="'xxl'">XXL</option>
+                              <option
+                                v-for="item in isListSize"
+                                :key="item.id"
+                                :value="item.id"
+                              >{{item.name}}</option>
                             </select>
                           </div>
                           <span
@@ -174,8 +176,8 @@ export default {
         formData.append("category_id", this.category_id);
         formData.append("name", this.name);
         formData.append("price", this.price);
-        formData.append("color", this.color);
-        formData.append("size", this.size);
+        formData.append("color_id", this.color);
+        formData.append("size_id", this.size);
         this.addProduct(formData);
         this.category_id = ''
         this.name = ''
@@ -191,7 +193,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["islistCategories", "isActiveModalAdd", "isStatus"])
+    ...mapGetters(["islistCategories", "isActiveModalAdd", "isStatus", "isListColor", "isListSize"])
   },
   created() {
     this.getCategories();

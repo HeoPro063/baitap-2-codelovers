@@ -83,30 +83,32 @@
                         <div class="form-group">
                           <label for="disabledTextInput">Color</label>
                          <div>
-                            <select v-model="dataEdit.color" class="custom-select">
-                              <option :selected="dataEdit.color == 'red'" v-bind:value="'red'">Red</option>
-                              <option :selected="dataEdit.color == 'blue'" v-bind:value="'blue'">Blue</option>
-                              <option :selected="dataEdit.color == 'green'" v-bind:value="'green'">Green</option>
-                              <option :selected="dataEdit.color == 'black'" v-bind:value="'black'">Black</option>
+                            <select v-model="dataEdit.color_id" class="custom-select">
+                              <option
+                                  v-for="item  in isListColor"
+                                  :key="item.id"
+                                  :value="item.id"
+                                >{{item.name}}</option>
                             </select>
                           </div>
                           <span
-                            v-if="!$v.dataEdit.color.required && $v.dataEdit.color.$dirty"
+                            v-if="!$v.dataEdit.color_id.required && $v.dataEdit.color_id.$dirty"
                             class="text-danger"
                           >Required field!</span>
                         </div>
                         <div class="form-group">
                           <label for="disabledTextInput">Size</label>
                          <div>
-                            <select v-model="dataEdit.size" class="custom-select">
-                              <option :selected="dataEdit.size == 'm'" v-bind:value="'m'">M</option>
-                              <option :selected="dataEdit.size == 'l'" v-bind:value="'l'">L</option>
-                              <option :selected="dataEdit.size == 'xl'" v-bind:value="'xl'">XL</option>
-                              <option :selected="dataEdit.size == 'xxl'" v-bind:value="'xxl'">XXL</option>
+                            <select v-model="dataEdit.size_id" class="custom-select">
+                                <option
+                                v-for="item in isListSize"
+                                :key="item.id"
+                                :value="item.id"
+                              >{{item.name}}</option>
                             </select>
                           </div>
                           <span
-                            v-if="!$v.dataEdit.size.required && $v.dataEdit.size.$dirty"
+                            v-if="!$v.dataEdit.size_id.required && $v.dataEdit.size_id.$dirty"
                             class="text-danger"
                           >Required field!</span>
                         </div>
@@ -151,8 +153,8 @@ export default {
       category_id: {required},
       name: {required},
       price: {required, numeric},
-      color: {required},
-      size: {required},
+      color_id: {required},
+      size_id: {required},
     }
   },
   methods: {
@@ -170,8 +172,8 @@ export default {
         formData.append("category_id", this.dataEdit.category_id);
         formData.append("name", this.dataEdit.name);
         formData.append("price", this.dataEdit.price);
-        formData.append("color", this.dataEdit.color);
-        formData.append("size", this.dataEdit.size);
+        formData.append("color_id", this.dataEdit.color_id);
+        formData.append("size_id", this.dataEdit.size_id);
         const dataSeen =  {
           formData: formData,
           index:  this.dataEdit.index
@@ -184,7 +186,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["islistCategories", "isActiveModalUpdate", "isStatus"]),
+    ...mapGetters(["islistCategories", "isActiveModalUpdate", "isStatus", "isListSize", "isListColor"]),
   },
   created() {
     this.getCategories();

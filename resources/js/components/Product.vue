@@ -98,16 +98,7 @@
                       class="btn btn-secondary"
                       data-toggle="modal"
                       data-target="#exampleModal2"
-                      @click="clickEditProduct({
-                        index: index, 
-                        id: item.id, 
-                        category_id: item.category_id,
-                        name: item.name,
-                        avatar: item.avatar,
-                        price: item.price,
-                        color: item.color,
-                        size: item.size,
-                      })"
+                      @click="clickEditProduct(item, index)"
                     >Edit</button>
                     <button
                       class="btn btn-danger"
@@ -170,8 +161,8 @@ export default {
         name: null,
         avatar: null,
         price: null,
-        color: null,
-        size: null
+        color_id: null,
+        size_id: null
       },
       dataGet: {
         url_get: "api/category/product/paginate",
@@ -196,15 +187,15 @@ export default {
       this.dataDelete.idProduct = idProduct;
       this.dataDelete.index = index;
     },
-    clickEditProduct(obj) {
-      this.dataEdit.index = obj.index;
-      this.dataEdit.id = obj.id;
-      this.dataEdit.category_id = obj.category_id;
-      this.dataEdit.name = obj.name;
-      this.dataEdit.avatar = obj.avatar;
-      this.dataEdit.price = obj.price;
-      this.dataEdit.color = obj.color;
-      this.dataEdit.size = obj.size;
+    clickEditProduct(item, index) {
+      this.dataEdit.index = index;
+      this.dataEdit.id = item.id;
+      this.dataEdit.category_id = item.category_id;
+      this.dataEdit.name = item.name;
+      this.dataEdit.avatar = item.avatar;
+      this.dataEdit.price = item.price;
+      this.dataEdit.color_id = item.color_id;
+      this.dataEdit.size_id = item.size_id;
       this.CHANGE_ACTICE_MODAL_UPDATE();
     },
     fetchCustomer(page) {

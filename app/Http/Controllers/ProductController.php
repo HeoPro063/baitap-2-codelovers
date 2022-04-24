@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Products;
 use App\Models\Categories;
+use App\Models\Sizes;
+use App\Models\Colors;
 use Illuminate\Support\Facades\DB;
 use Elasticsearch\ClientBuilder;
 
@@ -40,8 +42,8 @@ class ProductController extends Controller
             'category_id' => 'required',
             'name' => 'required',
             'price' => 'required',
-            'color' => 'required',
-            'size' => 'required',
+            'color_id' => 'required',
+            'size_id' => 'required',
         ]);
 
         if($request->hasFile('img')){
@@ -52,8 +54,8 @@ class ProductController extends Controller
             $product->name = $request->name;
             $product->avatar = $fileName;
             $product->price = $request->price;
-            $product->color = $request->color;
-            $product->size = $request->size;
+            $product->color_id = $request->color_id;
+            $product->size_id = $request->size_id;
             $product->created_at = now();
             $product->updated_at = now();
             if($product->save()){
@@ -82,8 +84,8 @@ class ProductController extends Controller
                 'name' => $product->name,
                 'avatar' => $product->avatar,
                 'price' => $product->price,
-                'color' => $product->color,
-                'size' => $product->size,
+                'color_id' => $product->color_id,
+                'size_id' => $product->size_id,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]
@@ -125,12 +127,19 @@ class ProductController extends Controller
                     ]
                 ]
             ];
-        }else if($request->colorOrSize != ''){
+        }else if($request->idColor != ''){
             $params['body']['query'] =  [
                 "bool" => [
                     "should" => [
-                        ['match' => ['color' => $request->colorOrSize]],
-                        ['match' => ['size' => $request->colorOrSize]],
+                        ['match' => ['color_id' => $request->idColor]],
+                    ]
+                ]
+            ];
+        }else if($request->idSize != ''){
+            $params['body']['query'] =  [
+                "bool" => [
+                    "should" => [
+                        ['match' => ['size_id' => $request->idSize]],
                     ]
                 ]
             ];
@@ -199,7 +208,19 @@ class ProductController extends Controller
 
     public function responseDataDetail($product){
         $data = [];
-        $data['product_detail'] = $product;
+        $data['product_detail']['id'] = $product['id'];
+        $data['product_detail']['category_id'] = $product['category_id'];
+        $data['product_detail']['category_name'] = $product['category_name'];
+        $data['product_detail']['name'] = $product['name'];
+        $data['product_detail']['price'] = $product['price'];
+        $data['product_detail']['color_id'] = $product['color_id'];
+        $data['product_detail']['size_id'] = $product['size_id'];
+        $Colors = Colors::find($product['color_id']);
+        $Sizes = Sizes::find($product['size_id']);
+        $data['product_detail']['color_id'] = $product['color_id'];
+        $data['product_detail']['color_id'] = $product['color_id'];
+        $data['product_detail']['color'] = $Colors->name;
+        $data['product_detail']['size'] = $Sizes->name;
         $name_first = explode(' ', $product['name']);
         $params = [
             "index" => $this->index,
@@ -242,33 +263,17 @@ class ProductController extends Controller
             $data['product_ralate'][$key]['name'] = $item['_source']['name'];
             $data['product_ralate'][$key]['avatar'] = $item['_source']['avatar'];
             $data['product_ralate'][$key]['price'] = $item['_source']['price'];
-            $data['product_ralate'][$key]['color'] = $item['_source']['color'];
-            $data['product_ralate'][$key]['size'] = $item['_source']['size'];
+            $data['product_ralate'][$key]['color_id'] = $item['_source']['color_id'];
+            $data['product_ralate'][$key]['size_id'] = $item['_source']['size_id'];
+            $Colors = Colors::find($item['_source']['color_id']);
+            $Sizes = Sizes::find($item['_source']['size_id']);
+            $data['product_ralate'][$key]['color'] = $Colors->name; 
+            $data['product_ralate'][$key]['size'] = $Sizes->name; 
             $data['product_ralate'][$key]['created_at'] = $item['_source']['created_at'];
             $data['product_ralate'][$key]['updated_at'] = $item['_source']['updated_at'];
         }
         return  $data;
     }  
-
-
-    public function addProductRalate($product_ralate) {
-        $data = [];
-        foreach($product_ralate as $key => $item) {
-            $data[$key]['id'] = $item->id;
-            $data[$key]['category_id'] = $item->category_id;
-            $Category = Categories::find($item->category_id); 
-            $data[$key]['category_name'] = $Category->name;
-            $data[$key]['name'] = $item->name;
-            $data[$key]['avatar'] = $item->avatar;
-            $data[$key]['price'] = $item->price;
-            $data[$key]['color'] = $item->color;
-            $data[$key]['size'] = $item->size;
-            $data[$key]['created_at'] = $item->created_at;
-            $data[$key]['updated_at'] = $item->updated_at;
-        }
-        return $data;
-    }  
-
 
     /**
      * Show the form for editing the specified resource.
@@ -289,8 +294,8 @@ class ProductController extends Controller
         $product->category_id = $request->category_id;
         $product->name = $request->name;
         $product->price = $request->price;
-        $product->color = $request->color;
-        $product->size = $request->size;
+        $product->color_id = $request->color_id;
+        $product->size_id = $request->size_id;
         $product->updated_at = now();
         if($product->save()){
             return response()->json([
@@ -315,8 +320,8 @@ class ProductController extends Controller
                 'name' => $product->name,
                 'avatar' => $product->avatar,
                 'price' => $product->price,
-                'color' => $product->color,
-                'size' => $product->size,
+                'color_id' => $product->color_id,
+                'size_id' => $product->size_id,
                 'created_at' => $product->created_at,
                 'updated_at' => $product->updated_at,
             ]

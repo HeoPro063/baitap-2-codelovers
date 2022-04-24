@@ -21,8 +21,6 @@ class CreateProductsTable extends Migration
             $table->string('name', 200);
             $table->string('avatar', 200);
             $table->integer('price');
-            $table->string('color', 100);
-            $table->string('size', 100);
             $table->timestamps();
             $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
             $table->foreign('color_id')->references('id')->on('colors')->onDelete('cascade');

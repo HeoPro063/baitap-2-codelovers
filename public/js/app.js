@@ -5703,29 +5703,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
@@ -5909,15 +5886,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 
@@ -5939,8 +5907,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         name: null,
         avatar: null,
         price: null,
-        color: null,
-        size: null
+        color_id: null,
+        size_id: null
       },
       dataGet: {
         url_get: "api/category/product/paginate",
@@ -5960,15 +5928,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.dataDelete.idProduct = idProduct;
       this.dataDelete.index = index;
     },
-    clickEditProduct: function clickEditProduct(obj) {
-      this.dataEdit.index = obj.index;
-      this.dataEdit.id = obj.id;
-      this.dataEdit.category_id = obj.category_id;
-      this.dataEdit.name = obj.name;
-      this.dataEdit.avatar = obj.avatar;
-      this.dataEdit.price = obj.price;
-      this.dataEdit.color = obj.color;
-      this.dataEdit.size = obj.size;
+    clickEditProduct: function clickEditProduct(item, index) {
+      this.dataEdit.index = index;
+      this.dataEdit.id = item.id;
+      this.dataEdit.category_id = item.category_id;
+      this.dataEdit.name = item.name;
+      this.dataEdit.avatar = item.avatar;
+      this.dataEdit.price = item.price;
+      this.dataEdit.color_id = item.color_id;
+      this.dataEdit.size_id = item.size_id;
       this.CHANGE_ACTICE_MODAL_UPDATE();
     },
     fetchCustomer: function fetchCustomer(page) {
@@ -6290,16 +6258,29 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   props: ['dataGet'],
-  methods: _objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapActions)(['getPaginateProduct'])), {}, {
-    chooseColor: function chooseColor(param) {
+  data: function data() {
+    return {
+      searchColor: ''
+    };
+  },
+  computed: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapGetters)(['isListColor'])),
+  methods: _objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapActions)(['getPaginateProduct', 'getColor'])), {}, {
+    chooseColor: function chooseColor() {
       this.dataGet.action = 2;
-      this.dataGet.dataSeach = param;
+      this.dataGet.dataSeach = this.searchColor;
       this.getPaginateProduct(this.dataGet);
     }
-  })
+  }),
+  created: function created() {
+    this.getColor();
+  }
 });
 
 /***/ }),
@@ -6334,16 +6315,29 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   props: ['dataGet'],
-  methods: _objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapActions)(['getPaginateProduct'])), {}, {
-    chooseColor: function chooseColor(param) {
-      this.dataGet.action = 2;
-      this.dataGet.dataSeach = param;
+  data: function data() {
+    return {
+      searchSize: ''
+    };
+  },
+  computed: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapGetters)(['isListSize'])),
+  methods: _objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapActions)(['getPaginateProduct', 'getSize'])), {}, {
+    chooseSize: function chooseSize() {
+      this.dataGet.action = 5;
+      this.dataGet.dataSeach = this.searchSize;
       this.getPaginateProduct(this.dataGet);
     }
-  })
+  }),
+  created: function created() {
+    this.getSize();
+  }
 });
 
 /***/ }),
@@ -7259,6 +7253,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -7307,8 +7303,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         formData.append("category_id", this.category_id);
         formData.append("name", this.name);
         formData.append("price", this.price);
-        formData.append("color", this.color);
-        formData.append("size", this.size);
+        formData.append("color_id", this.color);
+        formData.append("size_id", this.size);
         this.addProduct(formData);
         this.category_id = '';
         this.name = '';
@@ -7325,7 +7321,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.avatar = e.target.files[0];
     }
   }),
-  computed: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_1__.mapGetters)(["islistCategories", "isActiveModalAdd", "isStatus"])),
+  computed: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_1__.mapGetters)(["islistCategories", "isActiveModalAdd", "isStatus", "isListColor", "isListSize"])),
   created: function created() {
     this.getCategories();
   }
@@ -7484,21 +7480,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         currency: 'VND'
       }) : '';
       return formatter;
-    },
-    formatStringColor: function formatStringColor(string) {
-      var color = '';
-
-      if (string === 'red') {
-        color = 'text-danger';
-      } else if (string === 'green') {
-        color = 'text-success';
-      } else if (string === 'blue') {
-        color = 'text-primary';
-      } else if (string === 'black') {
-        color = 'text-dark';
-      }
-
-      return color;
     },
     formatStringSize: function formatStringSize(string) {
       var text = string ? string.toUpperCase() : '';
@@ -7679,6 +7660,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -7700,10 +7683,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__.required,
         numeric: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__.numeric
       },
-      color: {
+      color_id: {
         required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__.required
       },
-      size: {
+      size_id: {
         required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__.required
       }
     }
@@ -7724,8 +7707,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         formData.append("category_id", this.dataEdit.category_id);
         formData.append("name", this.dataEdit.name);
         formData.append("price", this.dataEdit.price);
-        formData.append("color", this.dataEdit.color);
-        formData.append("size", this.dataEdit.size);
+        formData.append("color_id", this.dataEdit.color_id);
+        formData.append("size_id", this.dataEdit.size_id);
         var dataSeen = {
           formData: formData,
           index: this.dataEdit.index
@@ -7737,7 +7720,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.avatar = e.target.files[0];
     }
   }),
-  computed: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_1__.mapGetters)(["islistCategories", "isActiveModalUpdate", "isStatus"])),
+  computed: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_1__.mapGetters)(["islistCategories", "isActiveModalUpdate", "isStatus", "isListSize", "isListColor"])),
   created: function created() {
     this.getCategories();
   }
@@ -9060,7 +9043,7 @@ var actions = {
                 };
               } else if (dataGet.action === 2) {
                 dataSearch = {
-                  colorOrSize: dataGet.dataSeach
+                  idColor: dataGet.dataSeach
                 };
               } else if (dataGet.action === 3) {
                 dataSearch = {
@@ -9069,6 +9052,10 @@ var actions = {
               } else if (dataGet.action === 4) {
                 dataSearch = {
                   idCategory: dataGet.dataSeach
+                };
+              } else if (dataGet.action === 5) {
+                dataSearch = {
+                  idSize: dataGet.dataSeach
                 };
               }
 
@@ -36197,12 +36184,6 @@ var render = function () {
           _vm._v(" "),
           _vm._m(3),
         ]),
-        _vm._v(" "),
-        _vm._m(4),
-        _vm._v(" "),
-        _vm._m(5),
-        _vm._v(" "),
-        _vm._m(6),
       ]),
     ]),
   ])
@@ -36213,7 +36194,7 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "login-logo" }, [
-      _c("a", { attrs: { href: "../../index2.html" } }, [
+      _c("a", { attrs: { href: "" } }, [
         _c("b", [_vm._v("Admin")]),
         _vm._v("LTE\n    "),
       ]),
@@ -36244,15 +36225,7 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "col-8" }, [
-        _c("div", { staticClass: "icheck-primary" }, [
-          _c("input", { attrs: { type: "checkbox", id: "remember" } }),
-          _vm._v(" "),
-          _c("label", { attrs: { for: "remember" } }, [_vm._v("Remember Me")]),
-        ]),
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "col-4" }, [
+      _c("div", { staticClass: "col" }, [
         _c(
           "button",
           {
@@ -36262,54 +36235,6 @@ var staticRenderFns = [
           [_vm._v("Sign In")]
         ),
       ]),
-    ])
-  },
-  function () {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "social-auth-links text-center mb-3" }, [
-      _c("p", [_vm._v("- OR -")]),
-      _vm._v(" "),
-      _c(
-        "a",
-        { staticClass: "btn btn-block btn-primary", attrs: { href: "#" } },
-        [
-          _c("i", { staticClass: "fab fa-facebook mr-2" }),
-          _vm._v(" Sign in using Facebook\n        "),
-        ]
-      ),
-      _vm._v(" "),
-      _c(
-        "a",
-        { staticClass: "btn btn-block btn-danger", attrs: { href: "#" } },
-        [
-          _c("i", { staticClass: "fab fa-google-plus mr-2" }),
-          _vm._v(" Sign in using Google+\n        "),
-        ]
-      ),
-    ])
-  },
-  function () {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("p", { staticClass: "mb-1" }, [
-      _c("a", { attrs: { href: "forgot-password.html" } }, [
-        _vm._v("I forgot my password"),
-      ]),
-    ])
-  },
-  function () {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("p", { staticClass: "mb-0" }, [
-      _c(
-        "a",
-        { staticClass: "text-center", attrs: { href: "register.html" } },
-        [_vm._v("Register a new membership")]
-      ),
     ])
   },
 ]
@@ -36542,16 +36467,7 @@ var render = function () {
                             },
                             on: {
                               click: function ($event) {
-                                return _vm.clickEditProduct({
-                                  index: index,
-                                  id: item.id,
-                                  category_id: item.category_id,
-                                  name: item.name,
-                                  avatar: item.avatar,
-                                  price: item.price,
-                                  color: item.color,
-                                  size: item.size,
-                                })
+                                return _vm.clickEditProduct(item, index)
                               },
                             },
                           },
@@ -36983,55 +36899,50 @@ var render = function () {
       ]),
       _vm._v(" "),
       _c(
-        "li",
+        "select",
         {
-          staticClass: "list-group-item cursor-pointer item-product",
-          on: {
-            click: function ($event) {
-              return _vm.chooseColor("red")
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.searchColor,
+              expression: "searchColor",
             },
+          ],
+          staticClass: "custom-select",
+          on: {
+            change: [
+              function ($event) {
+                var $$selectedVal = Array.prototype.filter
+                  .call($event.target.options, function (o) {
+                    return o.selected
+                  })
+                  .map(function (o) {
+                    var val = "_value" in o ? o._value : o.value
+                    return val
+                  })
+                _vm.searchColor = $event.target.multiple
+                  ? $$selectedVal
+                  : $$selectedVal[0]
+              },
+              _vm.chooseColor,
+            ],
           },
         },
-        [_vm._v("Đỏ")]
-      ),
-      _vm._v(" "),
-      _c(
-        "li",
-        {
-          staticClass: "list-group-item cursor-pointer item-product",
-          on: {
-            click: function ($event) {
-              return _vm.chooseColor("green")
-            },
-          },
-        },
-        [_vm._v("Xanh lá")]
-      ),
-      _vm._v(" "),
-      _c(
-        "li",
-        {
-          staticClass: "list-group-item cursor-pointer item-product",
-          on: {
-            click: function ($event) {
-              return _vm.chooseColor("blue")
-            },
-          },
-        },
-        [_vm._v("Xanh nước biển")]
-      ),
-      _vm._v(" "),
-      _c(
-        "li",
-        {
-          staticClass: "list-group-item cursor-pointer item-product",
-          on: {
-            click: function ($event) {
-              return _vm.chooseColor("black")
-            },
-          },
-        },
-        [_vm._v("Đen")]
+        [
+          _c("option", { attrs: { value: "", selected: "" } }, [
+            _vm._v("Tìm màu"),
+          ]),
+          _vm._v(" "),
+          _vm._l(_vm.isListColor, function (item) {
+            return _c(
+              "option",
+              { key: item.id, domProps: { value: item.id } },
+              [_vm._v(_vm._s(item.name))]
+            )
+          }),
+        ],
+        2
       ),
     ]),
   ])
@@ -37062,59 +36973,54 @@ var render = function () {
   return _c("div", [
     _c("ul", { staticClass: "list-group mt-2" }, [
       _c("li", { staticClass: "list-group-item active" }, [
-        _vm._v("Theo size"),
+        _vm._v("Theo danh sách màu"),
       ]),
       _vm._v(" "),
       _c(
-        "li",
+        "select",
         {
-          staticClass: "list-group-item cursor-pointer item-product",
-          on: {
-            click: function ($event) {
-              return _vm.chooseColor("l")
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.searchSize,
+              expression: "searchSize",
             },
+          ],
+          staticClass: "custom-select",
+          on: {
+            change: [
+              function ($event) {
+                var $$selectedVal = Array.prototype.filter
+                  .call($event.target.options, function (o) {
+                    return o.selected
+                  })
+                  .map(function (o) {
+                    var val = "_value" in o ? o._value : o.value
+                    return val
+                  })
+                _vm.searchSize = $event.target.multiple
+                  ? $$selectedVal
+                  : $$selectedVal[0]
+              },
+              _vm.chooseSize,
+            ],
           },
         },
-        [_vm._v("L")]
-      ),
-      _vm._v(" "),
-      _c(
-        "li",
-        {
-          staticClass: "list-group-item cursor-pointer item-product",
-          on: {
-            click: function ($event) {
-              return _vm.chooseColor("m")
-            },
-          },
-        },
-        [_vm._v("M")]
-      ),
-      _vm._v(" "),
-      _c(
-        "li",
-        {
-          staticClass: "list-group-item cursor-pointer item-product",
-          on: {
-            click: function ($event) {
-              return _vm.chooseColor("xl")
-            },
-          },
-        },
-        [_vm._v("XL")]
-      ),
-      _vm._v(" "),
-      _c(
-        "li",
-        {
-          staticClass: "list-group-item cursor-pointer item-product",
-          on: {
-            click: function ($event) {
-              return _vm.chooseColor("xxl")
-            },
-          },
-        },
-        [_vm._v("XXL")]
+        [
+          _c("option", { attrs: { value: "", selected: "" } }, [
+            _vm._v("Tìm size"),
+          ]),
+          _vm._v(" "),
+          _vm._l(_vm.isListSize, function (item) {
+            return _c(
+              "option",
+              { key: item.id, domProps: { value: item.id } },
+              [_vm._v(_vm._s(item.name))]
+            )
+          }),
+        ],
+        2
       ),
     ]),
   ])
@@ -38854,31 +38760,17 @@ var render = function () {
                                           },
                                         },
                                       },
-                                      [
-                                        _c(
+                                      _vm._l(_vm.isListColor, function (item) {
+                                        return _c(
                                           "option",
-                                          { domProps: { value: "red" } },
-                                          [_vm._v("Red")]
-                                        ),
-                                        _vm._v(" "),
-                                        _c(
-                                          "option",
-                                          { domProps: { value: "blue" } },
-                                          [_vm._v("Blue")]
-                                        ),
-                                        _vm._v(" "),
-                                        _c(
-                                          "option",
-                                          { domProps: { value: "green" } },
-                                          [_vm._v("Green")]
-                                        ),
-                                        _vm._v(" "),
-                                        _c(
-                                          "option",
-                                          { domProps: { value: "black" } },
-                                          [_vm._v("Black")]
-                                        ),
-                                      ]
+                                          {
+                                            key: item.id,
+                                            domProps: { value: item.id },
+                                          },
+                                          [_vm._v(_vm._s(item.name))]
+                                        )
+                                      }),
+                                      0
                                     ),
                                   ]),
                                   _vm._v(" "),
@@ -38934,31 +38826,17 @@ var render = function () {
                                           },
                                         },
                                       },
-                                      [
-                                        _c(
+                                      _vm._l(_vm.isListSize, function (item) {
+                                        return _c(
                                           "option",
-                                          { domProps: { value: "m" } },
-                                          [_vm._v("M")]
-                                        ),
-                                        _vm._v(" "),
-                                        _c(
-                                          "option",
-                                          { domProps: { value: "l" } },
-                                          [_vm._v("L")]
-                                        ),
-                                        _vm._v(" "),
-                                        _c(
-                                          "option",
-                                          { domProps: { value: "xl" } },
-                                          [_vm._v("XL")]
-                                        ),
-                                        _vm._v(" "),
-                                        _c(
-                                          "option",
-                                          { domProps: { value: "xxl" } },
-                                          [_vm._v("XXL")]
-                                        ),
-                                      ]
+                                          {
+                                            key: item.id,
+                                            domProps: { value: item.id },
+                                          },
+                                          [_vm._v(_vm._s(item.name))]
+                                        )
+                                      }),
+                                      0
                                     ),
                                   ]),
                                   _vm._v(" "),
@@ -39235,22 +39113,9 @@ var render = function () {
                     ]),
                     _vm._v(" "),
                     _c("p", [
-                      _vm._v("Màu: "),
-                      _c(
-                        "span",
-                        {
-                          class: _vm.formatStringColor(
-                            this.isDataProductDetail.color
-                          ),
-                        },
-                        [
-                          _vm._v(
-                            " " +
-                              _vm._s(
-                                _vm.jsUcfirst(this.isDataProductDetail.color)
-                              )
-                          ),
-                        ]
+                      _vm._v(
+                        "Màu:  " +
+                          _vm._s(_vm.jsUcfirst(this.isDataProductDetail.color))
                       ),
                     ]),
                     _vm._v(" "),
@@ -39293,11 +39158,8 @@ var render = function () {
                             ]),
                             _vm._v(" "),
                             _c("p", { staticClass: "card-text" }, [
-                              _vm._v("Color: "),
-                              _c(
-                                "span",
-                                { class: _vm.formatStringColor(item.color) },
-                                [_vm._v(_vm._s(item.color))]
+                              _vm._v(
+                                "Color: " + _vm._s(_vm.jsUcfirst(item.color))
                               ),
                             ]),
                             _vm._v(" "),
@@ -39677,8 +39539,8 @@ var render = function () {
                                           {
                                             name: "model",
                                             rawName: "v-model",
-                                            value: _vm.dataEdit.color,
-                                            expression: "dataEdit.color",
+                                            value: _vm.dataEdit.color_id,
+                                            expression: "dataEdit.color_id",
                                           },
                                         ],
                                         staticClass: "custom-select",
@@ -39701,7 +39563,7 @@ var render = function () {
                                                 })
                                             _vm.$set(
                                               _vm.dataEdit,
-                                              "color",
+                                              "color_id",
                                               $event.target.multiple
                                                 ? $$selectedVal
                                                 : $$selectedVal[0]
@@ -39709,60 +39571,22 @@ var render = function () {
                                           },
                                         },
                                       },
-                                      [
-                                        _c(
+                                      _vm._l(_vm.isListColor, function (item) {
+                                        return _c(
                                           "option",
                                           {
-                                            domProps: {
-                                              selected:
-                                                _vm.dataEdit.color == "red",
-                                              value: "red",
-                                            },
+                                            key: item.id,
+                                            domProps: { value: item.id },
                                           },
-                                          [_vm._v("Red")]
-                                        ),
-                                        _vm._v(" "),
-                                        _c(
-                                          "option",
-                                          {
-                                            domProps: {
-                                              selected:
-                                                _vm.dataEdit.color == "blue",
-                                              value: "blue",
-                                            },
-                                          },
-                                          [_vm._v("Blue")]
-                                        ),
-                                        _vm._v(" "),
-                                        _c(
-                                          "option",
-                                          {
-                                            domProps: {
-                                              selected:
-                                                _vm.dataEdit.color == "green",
-                                              value: "green",
-                                            },
-                                          },
-                                          [_vm._v("Green")]
-                                        ),
-                                        _vm._v(" "),
-                                        _c(
-                                          "option",
-                                          {
-                                            domProps: {
-                                              selected:
-                                                _vm.dataEdit.color == "black",
-                                              value: "black",
-                                            },
-                                          },
-                                          [_vm._v("Black")]
-                                        ),
-                                      ]
+                                          [_vm._v(_vm._s(item.name))]
+                                        )
+                                      }),
+                                      0
                                     ),
                                   ]),
                                   _vm._v(" "),
-                                  !_vm.$v.dataEdit.color.required &&
-                                  _vm.$v.dataEdit.color.$dirty
+                                  !_vm.$v.dataEdit.color_id.required &&
+                                  _vm.$v.dataEdit.color_id.$dirty
                                     ? _c(
                                         "span",
                                         { staticClass: "text-danger" },
@@ -39786,8 +39610,8 @@ var render = function () {
                                           {
                                             name: "model",
                                             rawName: "v-model",
-                                            value: _vm.dataEdit.size,
-                                            expression: "dataEdit.size",
+                                            value: _vm.dataEdit.size_id,
+                                            expression: "dataEdit.size_id",
                                           },
                                         ],
                                         staticClass: "custom-select",
@@ -39810,7 +39634,7 @@ var render = function () {
                                                 })
                                             _vm.$set(
                                               _vm.dataEdit,
-                                              "size",
+                                              "size_id",
                                               $event.target.multiple
                                                 ? $$selectedVal
                                                 : $$selectedVal[0]
@@ -39818,60 +39642,22 @@ var render = function () {
                                           },
                                         },
                                       },
-                                      [
-                                        _c(
+                                      _vm._l(_vm.isListSize, function (item) {
+                                        return _c(
                                           "option",
                                           {
-                                            domProps: {
-                                              selected:
-                                                _vm.dataEdit.size == "m",
-                                              value: "m",
-                                            },
+                                            key: item.id,
+                                            domProps: { value: item.id },
                                           },
-                                          [_vm._v("M")]
-                                        ),
-                                        _vm._v(" "),
-                                        _c(
-                                          "option",
-                                          {
-                                            domProps: {
-                                              selected:
-                                                _vm.dataEdit.size == "l",
-                                              value: "l",
-                                            },
-                                          },
-                                          [_vm._v("L")]
-                                        ),
-                                        _vm._v(" "),
-                                        _c(
-                                          "option",
-                                          {
-                                            domProps: {
-                                              selected:
-                                                _vm.dataEdit.size == "xl",
-                                              value: "xl",
-                                            },
-                                          },
-                                          [_vm._v("XL")]
-                                        ),
-                                        _vm._v(" "),
-                                        _c(
-                                          "option",
-                                          {
-                                            domProps: {
-                                              selected:
-                                                _vm.dataEdit.size == "xxl",
-                                              value: "xxl",
-                                            },
-                                          },
-                                          [_vm._v("XXL")]
-                                        ),
-                                      ]
+                                          [_vm._v(_vm._s(item.name))]
+                                        )
+                                      }),
+                                      0
                                     ),
                                   ]),
                                   _vm._v(" "),
-                                  !_vm.$v.dataEdit.size.required &&
-                                  _vm.$v.dataEdit.size.$dirty
+                                  !_vm.$v.dataEdit.size_id.required &&
+                                  _vm.$v.dataEdit.size_id.$dirty
                                     ? _c(
                                         "span",
                                         { staticClass: "text-danger" },

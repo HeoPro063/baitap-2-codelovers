@@ -84,7 +84,7 @@ const actions = {
                 } 
             }else if(dataGet.action === 2){
                 dataSearch = {
-                    colorOrSize: dataGet.dataSeach
+                    idColor: dataGet.dataSeach
                 } 
             }else if(dataGet.action === 3){
                 dataSearch = {
@@ -93,6 +93,11 @@ const actions = {
             }else if(dataGet.action === 4){
                 dataSearch = {
                     idCategory: dataGet.dataSeach
+                } 
+            }
+            else if(dataGet.action === 5){
+                dataSearch = {
+                    idSize: dataGet.dataSeach
                 } 
             }
             const res = await axios.post(page_url, dataSearch)
