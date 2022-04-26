@@ -7,6 +7,7 @@ import Category from './modules/Category'
 import Product from './modules/Product'
 import Color from './modules/Color'
 import Size from './modules/Size'
+import Alert from './modules/Alert'
 
 Vue.use(Vuex)
 
@@ -16,7 +17,8 @@ const storeData = {
 		Category,
 		Product,
 		Color,
-		Size    
+		Size,
+		Alert
 	}
 }
 

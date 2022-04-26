@@ -29,9 +29,19 @@ const actions = {
             commit('ADD_SIZE', res.data)
             commit('CHANGE_ACTICE_MODAL_ADD_SIZE')
             commit('CHANGE_STATUS_SIZE')
+            var mess = {
+                type: 'success',
+                text: 'Thêm thành công',
+            }
+            commit('ADD_ALERT', mess)
         } catch (error) {
             commit('CHANGE_ACTICE_MODAL_ADD_SIZE')
             commit('CHANGE_STATUS_SIZE')
+            var mess = {
+                type: 'danger',
+                text: 'Thêm thất bại',
+            }
+            commit('ADD_ALERT', mess)
         }
     },
     async editSize({ commit }, data) {
@@ -42,9 +52,19 @@ const actions = {
             commit('EDIT_SIZE', {dataUpdate , index})
             commit('CHANGE_ACTICE_MODAL_EDIT_SIZE')
             commit('CHANGE_STATUS_SIZE')
+            var mess = {
+                type: 'success',
+                text: 'Sửa thành công',
+            }
+            commit('ADD_ALERT', mess)
         } catch (error) {
             commit('CHANGE_ACTICE_MODAL_EDIT_SIZE')
             commit('CHANGE_STATUS_SIZE')
+            var mess = {
+                type: 'danger',
+                text: 'Sửa thất bại',
+            }
+            commit('ADD_ALERT', mess)
         }
     },
     async deleteSize({ commit }, data) {
@@ -53,6 +73,11 @@ const actions = {
             var id = data.id
             await axios.get(`api/size/delete/${id}`)
             commit('DELETE_SIZE',  index)
+            var mess = {
+                type: 'success',
+                text: 'Xóa thành công',
+            }
+            commit('ADD_ALERT', mess)
         } catch (error) {
         }
     },

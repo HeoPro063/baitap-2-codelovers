@@ -29,9 +29,19 @@ const actions = {
             commit('ADD_COLOR', res.data)
             commit('CHANGE_ACTICE_MODAL_ADD_COLOR')
             commit('CHANGE_STATUS_COLOR')
+            var mess = {
+                type: 'success',
+                text: 'Thêm mới thành công',
+            }
+            commit('ADD_ALERT', mess)
         } catch (error) {
             commit('CHANGE_ACTICE_MODAL_ADD_COLOR')
             commit('CHANGE_STATUS_COLOR')
+            var mess = {
+                type: 'danger',
+                text: 'Tên màu đã tồn tại',
+            }
+            commit('ADD_ALERT', mess)
         }
     },
     async editColor({ commit }, data) {
@@ -42,9 +52,19 @@ const actions = {
             commit('EDIT_COLOR', {dataUpdate , index})
             commit('CHANGE_ACTICE_MODAL_EDIT_COLOR')
             commit('CHANGE_STATUS_COLOR')
+            var mess = {
+                type: 'success',
+                text: 'Sửa thành công',
+            }
+            commit('ADD_ALERT', mess)
         } catch (error) {
             commit('CHANGE_ACTICE_MODAL_EDIT_COLOR')
             commit('CHANGE_STATUS_COLOR')
+            var mess = {
+                type: 'danger',
+                text: 'Màu đã tồn tại',
+            }
+            commit('ADD_ALERT', mess)
         }
     },
     async deleteColor({ commit }, data) {
@@ -53,6 +73,11 @@ const actions = {
             var id = data.id
             await axios.get(`api/color/delete/${id}`)
             commit('DELETE_COLOR',  index)
+            var mess = {
+                type: 'success',
+                text: 'Xóa màu thành công',
+            }
+            commit('ADD_ALERT', mess)
         } catch (error) {
         }
     },

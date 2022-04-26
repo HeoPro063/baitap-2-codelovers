@@ -3,30 +3,39 @@ import axios from 'axios'
 const state = {
     listCategory: [],
     paginate: [],
-    showAlert: false,
+    statusCategory: false,
+    activeModalAddCategory: false,
+    activeModalEditCategory: false
 }
 
 const getters = {
     isListCategories: state => state.listCategory,
-    isAlert: state => state.showAlert,
-    isPaginate: state => state.paginate,    
+    isPaginate: state => state.paginate, 
+    isStatusCategory: state => state.statusCategory,
+    isActiveModalAddCategory: state => state.activeModalAddCategory, 
+    isActiveModalEditCategory: state => state.activeModalEditCategory 
 }
 
 const actions = {
-    // async getCategories({ commit }) {
-    //     try {
-    //         const res = await axios.get('api/category/index')
-    //         commit('GET_CATTEGORIES', res.data)
-    //     } catch (error) {
-    //         console.log(error)
-    //     }
-    // },
     async addCategory({ commit }, data) {
         try {
             const res = await axios.post('api/category/create', data)
             commit('ADD_CATEGORY', res.data)
+            commit('CHANGE_ACTICE_MODAL_ADD_CATEGORY')
+            commit('CHANGE_STATUS_CATEGORY')
+            var mess = {
+                type: 'success',
+                text: 'Thêm mới thành công',
+            }
+            commit('ADD_ALERT', mess)
         } catch (error) {
-            console.log(error)
+            commit('CHANGE_ACTICE_MODAL_ADD_CATEGORY')
+            commit('CHANGE_STATUS_CATEGORY')
+            var mess = {
+                type: 'danger',
+                text: 'Tên danh mục đã tồn tại',
+            }
+            commit('ADD_ALERT', mess)
         }
     },
     async editCategory({ commit }, data) {
@@ -35,8 +44,21 @@ const actions = {
             const dataUpdate = res.data
             const dataIndex = data.index
             commit('UPDATE_CATEGORIES', {dataUpdate, dataIndex})
+            commit('CHANGE_ACTICE_MODAL_EDIT_CATEGORY')
+            commit('CHANGE_STATUS_CATEGORY')
+            var mess = {
+                type: 'success',
+                text: 'Sửa thành công',
+            }
+            commit('ADD_ALERT', mess)
         } catch (error) {
-            console.log(error)
+            commit('CHANGE_ACTICE_MODAL_EDIT_CATEGORY')
+            commit('CHANGE_STATUS_CATEGORY')
+            var mess = {
+                type: 'danger',
+                text: 'Tên danh mục đã tồn tại',
+            }
+            commit('ADD_ALERT', mess)
         }
     },
     async deleteCategory({ commit }, data) {
@@ -45,6 +67,11 @@ const actions = {
             const dataId =  data.id
             await axios.get(`api/category/delete/${dataId}`)
             commit('DELETE_CATEGORY', dataIndex)
+            var mess = {
+                type: 'success',
+                text: 'Xóa danh mục thành công',
+            }
+            commit('ADD_ALERT', mess)
         } catch (error) {
             console.log(error)
         }
@@ -79,9 +106,6 @@ const mutations = {
         }
         state.listCategory.unshift(data)
     },
-    GET_ALERT(state, status){
-        state.showAlert = status;
-    },
     UPDATE_CATEGORIES(state,  {dataUpdate, dataIndex}){
         state.listCategory.splice(dataIndex, 1, dataUpdate)
     },
@@ -90,6 +114,15 @@ const mutations = {
     },
     PUSH_PAGINATE(state, data){
         state.paginate = data
+    },
+    CHANGE_STATUS_CATEGORY(state) {
+        state.statusCategory = !state.statusCategory
+    },
+    CHANGE_ACTICE_MODAL_ADD_CATEGORY(state) {
+        state.activeModalAddCategory = !state.activeModalAddCategory
+    },
+    CHANGE_ACTICE_MODAL_EDIT_CATEGORY(state) {
+        state.activeModalEditCategory = !state.activeModalEditCategory
     }
 }
 

@@ -69,7 +69,7 @@
             </thead>
             <tbody>
               <tr v-for="(item , index) in isListProduct" :key="item.id" class="item-product cursor-pointer">
-                  <td>{{index}}</td>
+                  <td>{{stt(index)}}</td>
                   <th>{{item.category_name}}</th>
                   <td
                     @click="showDetailProduct(item.id)"
@@ -180,6 +180,9 @@ export default {
     getImgUrl(pet) {
       return "images/" + pet;
     },
+     stt(number) {
+          return number + 1;
+      },
     clickDeleteProduct(idProduct, index) {
       this.dataDelete.idProduct = idProduct;
       this.dataDelete.index = index;

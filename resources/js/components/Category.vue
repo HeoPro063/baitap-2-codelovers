@@ -2,7 +2,6 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-md-12">
-        <div class="alert alert-danger mt-2" role="alert" v-if="isAlert">Error !</div>
         <div class="card">
           <div class="card-header justify-content-between">
             <div class="container">
@@ -34,8 +33,7 @@
                   <button
                     type="button"
                     class="btn btn-primary"
-                    data-toggle="modal"
-                    data-target="#exampleModal"
+                    @click="CHANGE_ACTICE_MODAL_ADD_CATEGORY"
                   >New Category</button>
                 </div>
               </div>
@@ -53,15 +51,13 @@
               </thead>
               <tbody>
                 <tr v-for="(item,  index) in isListCategories" :key="item.id">
-                  <td>{{index}}</td>
+                  <td>{{stt(index)}}</td>
                   <td>{{item.name}}</td>
                   <td>
                     <button
                       @click="editCategory(item, index)"
                       type="button"
                       class="btn btn-secondary"
-                      data-toggle="modal"
-                      data-target="#exampleModal2"
                     >Edit</button>
                     <button
                       @click="deleteCategory(item.id, index)"
@@ -99,14 +95,14 @@
     <!-- add category -->
     <ModalAdd />
     <!-- edit category -->
-    <ModalEdit :dataedit="dataEdit"></ModalEdit>
+    <ModalEdit :dataEdit="dataEdit"></ModalEdit>
     <!-- delete category -->
     <ModelDelete :dataDelete="dataDelete" :dataGet="dataGet"></ModelDelete>
   </div>
 </template>
 
 <script>
-import { mapGetters, mapActions } from "vuex";
+import { mapGetters, mapActions, mapMutations} from "vuex";
 import ModalAdd from "../layout/modal/category/Add";
 import ModalEdit from "../layout/modal/category/Edit";
 import ModelDelete from "../layout/modal/category/Delete";
@@ -134,14 +130,19 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["isListCategories", "isAlert", "isPaginate"])
+    ...mapGetters(["isListCategories", "isPaginate"])
   },
   methods: {
     ...mapActions(["showCategory", "getPaginateCategory"]),
+    ...mapMutations(["CHANGE_ACTICE_MODAL_ADD_CATEGORY", "CHANGE_ACTICE_MODAL_EDIT_CATEGORY"]),
+    stt(number) {
+          return number + 1;
+      },
     editCategory(data, index) {
       this.dataEdit.index = index;
       this.dataEdit.id = data.id;
       this.dataEdit.name = data.name;
+      this.CHANGE_ACTICE_MODAL_EDIT_CATEGORY()
     },
     deleteCategory(categoryId, index) {
       this.dataDelete.id = categoryId;

@@ -45,8 +45,18 @@ const actions = {
             commit('CHANGE_STATUS')
             commit('ADD_PRODUCT', res.data[0])
             commit('CHANGE_ACTICE_MODAL_ADD')
+            var mess = {
+                type: 'success',
+                text: 'Thêm sản phẩm thành công',
+            }
+            commit('ADD_ALERT', mess)
         } catch (error) {
             console.log(error)
+            var mess = {
+                type: 'danger',
+                text: 'Thêm sản phẩm thất bại',
+            }
+            commit('ADD_ALERT', mess)
         }
     },
     async deleteProduct({ commit }, data) {
@@ -56,6 +66,11 @@ const actions = {
             console.log(data)
             await axios.get(`api/category/product/delete/${id}`)
             commit('DELETE_PRODUCT', index)
+            var mess = {
+                type: 'danger',
+                text: 'Xóa thành công',
+            }
+            commit('ADD_ALERT', mess)
         } catch (error) {
             console.log(error)
         }
@@ -70,8 +85,18 @@ const actions = {
             commit('CHANGE_STATUS')
             commit('UPDATE_PRODUCT', {dataUpdate, index})
             commit('CHANGE_ACTICE_MODAL_UPDATE')
+            var mess = {
+                type: 'success',
+                text: 'Sửa sản phẩm thành công',
+            }
+            commit('ADD_ALERT', mess)
         } catch (error) {
             console.log(error)
+            var mess = {
+                type: 'danger',
+                text: 'Sửa sản phẩm thất bại',
+            }
+            commit('ADD_ALERT', mess)
         }
     },
     async getPaginateProduct({commit}, dataGet){

@@ -15,6 +15,8 @@
         <div v-else>
             <Login/>
         </div>
+
+        <NotificationList />
     </div>
 </template>
 
@@ -24,6 +26,7 @@ import Navbar from './components/Navbar.vue'
 import Preloader from './components/Preloader.vue'
 import Footer from './components/Footer.vue'
 import Login from '../components/Login.vue'
+import NotificationList from '../layout/components/NotificationList.vue'
 import {mapGetters, mapActions} from 'vuex'
 
 export default {
@@ -32,7 +35,8 @@ export default {
         Navbar,
         Preloader,
         Footer,
-        Login
+        Login,
+        NotificationList
     },
     computed: mapGetters(['isAuthenticated']),
     created() {

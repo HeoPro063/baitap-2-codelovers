@@ -23,8 +23,18 @@ const actions = {
             window.axios.defaults.headers.common['Authorization'] = 'Bearer '+ localStorage.getItem('token_login_codelovers')
             commit('GET_USER', res.data.user)
             commit('TOGGLE_AUTH', true)
+            var mess = {
+                type: 'success',
+                text: 'Đăng nhập thành công',
+            }
+            commit('ADD_ALERT', mess)
         } catch (error) {
             console.log(error)
+            var mess = {
+                type: 'danger',
+                text: 'Đăng nhập thất bại',
+            }
+            commit('ADD_ALERT', mess)
         }
     },
     async athenticated({ commit }){
